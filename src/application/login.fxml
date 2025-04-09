@@ -6,33 +6,41 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <!-- Root element, linked to LoginController -->
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.6" 
       fx:controller="application.LoginController" 
       alignment="CENTER" 
       spacing="20" 
+      style="-fx-background-color: #FFF7E6;"
       styleClass="root-pane">
 
     <!-- Title Label -->
-    <Label text="Enter Your Username and Password" styleClass="title-label"/>
+    <Label text="Enter Your Username and Password" style="-fx-text-fill: #333333;" styleClass="title-label">
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
     
     <!-- Username Input Field -->
-    <TextField fx:id="usernameField" promptText="Username"/>
+    <TextField fx:id="usernameField" promptText="Username" style="-fx-background-color: white;"/>
     
     <!-- Password Input Field -->
-    <PasswordField fx:id="passwordField" promptText="Password"/>
+    <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: white;"/>
     
     <!-- Login Button -->
     <Button fx:id="loginButton" 
             text="Login" 
             onAction="#handleLoginButtonAction" 
+            style="-fx-background-color: #FFA41B;"
             styleClass="styled-button"/>
     
     <!-- Back Button -->
     <Button fx:id="backButton" 
             text="Back" 
             onAction="#handleBackButtonAction" 
+            style="-fx-background-color: #FFA41B;"
             styleClass="styled-button"/>
     
 </VBox>

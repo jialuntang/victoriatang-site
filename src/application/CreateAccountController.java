@@ -16,7 +16,7 @@ import application.Database;
 public class CreateAccountController {
 
     @FXML private Button backButton;
-    @FXML private Button createAccountButton;
+    @FXML private Button createButton;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
@@ -35,7 +35,7 @@ public class CreateAccountController {
     }
 
     @FXML
-    private void handleCreateAccountButtonAction() {
+    private void handleCreateButtonAction() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -79,7 +79,6 @@ public class CreateAccountController {
         }
     }
 
-
     @FXML
     private void handleRegisterButtonAction() {
         String username = usernameField.getText();
@@ -114,7 +113,7 @@ public class CreateAccountController {
             Parent root = loader.load();
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) createAccountButton.getScene().getWindow();
+            Stage primaryStage = (Stage) createButton.getScene().getWindow();
             primaryStage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();

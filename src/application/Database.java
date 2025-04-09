@@ -4,30 +4,41 @@ import java.io.*;
 import java.util.*;
 
 public class Database {
-    private static final String FILE_PATH = "mydatabase.txt"; 
+    private static final String USER_FILE_PATH = System.getProperty("user.dir") + "/user_data.txt";
+    private static final String ACCOUNT_FILE_PATH = System.getProperty("user.dir") + "/account_data.txt";
 
-    // Initialize or create the database file if it doesn't exist
+    // Initialize or create the database files if they don't exist
     public static void initializeDatabase() {
-        File dbFile = new File(FILE_PATH);
-        if (!dbFile.exists()) {
-            try {
-                dbFile.createNewFile();
-                System.out.println("Database file has been created.");
-            } catch (IOException e) {
-                System.out.println("Error creating database file: " + e.getMessage());
+        File userFile = new File(USER_FILE_PATH);
+        File accountFile = new File(ACCOUNT_FILE_PATH);
+        
+        System.out.println("Database files location:");
+        System.out.println("User file: " + USER_FILE_PATH);
+        System.out.println("Account file: " + ACCOUNT_FILE_PATH);
+        
+        try {
+            if (!userFile.exists()) {
+                userFile.createNewFile();
+                System.out.println("User database file has been created.");
             }
+            if (!accountFile.exists()) {
+                accountFile.createNewFile();
+                System.out.println("Account database file has been created.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating database files: " + e.getMessage());
         }
     }
+
     public static void addAccount(int IDnum, double initialBalance, double initialHourlyWage) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            // Write account data (IDnum, initial balance, and hourly wage) to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH, true))) {
             writer.write(IDnum + "," + initialBalance + "," + initialHourlyWage + "\n");
             System.out.println("Account added.");
         } catch (IOException e) {
             System.out.println("Error adding account: " + e.getMessage());
         }
     }
-    
+
     public static double getHourlyWage(String userId) {
         double hourlyWage = 0.0;
         File file = new File("user_data.txt"); // File that contains the user data
@@ -56,23 +67,30 @@ public class Database {
         return hourlyWage; // Return the hourly wage or 0.0 if not found
     }
     
- // Method to log a pending transaction
+    // Method to log a pending transaction
     public static void logPendingTransaction(int senderAccountId, int recipientAccountId, double amount, String description) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            String transactionRecord = senderAccountId + "," + recipientAccountId + "," + amount + "," + description + ",Pending\n";
-            writer.write(transactionRecord);
-            System.out.println("Pending transaction logged.");
-        } catch (IOException e) {
-            System.out.println("Error logging pending transaction: " + e.getMessage());
+        // First update sender's balance
+        double senderBalance = getAccountBalance(senderAccountId);
+        if (senderBalance >= amount) {
+            updateAccountBalance(senderAccountId, senderBalance - amount);
+            
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH, true))) {
+                String transactionRecord = senderAccountId + "," + recipientAccountId + "," + amount + "," + description + ",Pending\n";
+                writer.write(transactionRecord);
+                System.out.println("Pending transaction logged.");
+            } catch (IOException e) {
+                System.out.println("Error logging pending transaction: " + e.getMessage());
+                // Rollback the balance change if transaction logging fails
+                updateAccountBalance(senderAccountId, senderBalance);
+            }
         }
     }
 
-    
     public static List<Transaction> getPendingTransactions(String string) {
         List<Transaction> pendingTransactions = new ArrayList<>();
         
         // Open the database file
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             
             // Read each line in the file
@@ -108,12 +126,10 @@ public class Database {
         return pendingTransactions;
     }
 
-
-    
- // Method to fetch the hourly wage from the database using the account ID
+    // Method to fetch the hourly wage from the database using the account ID
     public static double getHourlyWage(int accountId) {
         double hourlyWage = 0.0;  // Default value if not found
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Split the line into components (accountId, username, hourlyWage)
@@ -145,47 +161,100 @@ public class Database {
         return hourlyWage;  // Return the found hourly wage or the default 0.0 if not found
     }
 
-
-
-
- 
- // Update the method to accept a transaction ID as an argument
+    // Update the method to accept a transaction ID as an argument
     public static void markTransactionAsAccepted(int transactionId) {
-        // Retrieve the list of pending transactions
-        List<Transaction> transactions = getPendingTransactions(transactionId);
-
-        // Iterate over the transactions to find the matching one
-        for (Transaction t : transactions) {
-            if (t.getTransactionId() == transactionId) {
-                t.setStatus("Accepted"); // Update the status of the transaction
-                break;  // Stop searching once the transaction is found
+        List<String> lines = new ArrayList<>();
+        Transaction acceptedTransaction = null;
+        
+        // First read all lines and find the transaction
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                // Check if this is a transaction record (should have 5 fields)
+                if (data.length == 5) {
+                    try {
+                        int senderId = Integer.parseInt(data[0]);
+                        int recipientId = Integer.parseInt(data[1]);
+                        double amount = Double.parseDouble(data[2]);
+                        String description = data[3];
+                        String status = data[4];
+                        
+                        if (status.trim().equals("Pending")) {
+                            // Update the transaction status
+                            line = String.format("%d,%d,%.2f,%s,Accepted", 
+                                senderId, recipientId, amount, description);
+                            
+                            // Store transaction details for balance update
+                            acceptedTransaction = new Transaction(
+                                String.valueOf(senderId),
+                                String.valueOf(recipientId),
+                                amount,
+                                description
+                            );
+                        }
+                    } catch (NumberFormatException e) {
+                        // Skip invalid lines
+                        continue;
+                    }
+                }
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error processing transaction: " + e.getMessage());
+            return;
+        }
+        
+        // If we found and processed the transaction, update the recipient's balance
+        if (acceptedTransaction != null) {
+            int recipientId = Integer.parseInt(acceptedTransaction.getRecipient());
+            double amount = acceptedTransaction.getAmount();
+            double recipientBalance = getAccountBalance(recipientId);
+            
+            // Update recipient's balance
+            updateAccountBalance(recipientId, recipientBalance + amount);
+            
+            // Write back all lines with updated transaction status
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH))) {
+                for (String line : lines) {
+                    writer.write(line + "\n");
+                }
+            } catch (IOException e) {
+                System.out.println("Error updating transaction status: " + e.getMessage());
             }
         }
-
-        // Save the updated transactions back to the database or file
-        saveTransactionsToFile(transactions);
     }
 
     public static List<Transaction> getPendingTransactions(int accountId) {
         List<Transaction> transactions = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                // Example of how to create a transaction from the line data
-                int transactionId = Integer.parseInt(data[0]);
-                String sender = data[1];
-                String recipient = data[2];
-                double amount = Double.parseDouble(data[3]);
-                String description = data[4];
-                String status = data[5]; // Assuming the status is the 6th element
+                // Check if this is a transaction line (should have at least 5 elements)
+                if (data.length >= 5) {
+                    try {
+                        int senderId = Integer.parseInt(data[0]);
+                        int recipientId = Integer.parseInt(data[1]);
+                        double amount = Double.parseDouble(data[2]);
+                        String description = data[3];
+                        String status = data[4];
 
-                // If the status is "Pending", we add it to the list
-                if ("Pending".equals(status)) {
-                    Transaction transaction = new Transaction(sender, recipient, amount, description);
-                    transaction.setTransactionId(transactionId);
-                    transaction.setStatus(status);
-                    transactions.add(transaction);
+                        // Only add if it's a pending transaction and involves the current account
+                        if ("Pending".equals(status.trim()) && (senderId == accountId || recipientId == accountId)) {
+                            Transaction transaction = new Transaction(
+                                String.valueOf(senderId),
+                                String.valueOf(recipientId),
+                                amount,
+                                description
+                            );
+                            transaction.setStatus(status);
+                            transactions.add(transaction);
+                        }
+                    } catch (NumberFormatException e) {
+                        // Skip lines that don't contain valid transaction data
+                        continue;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -194,7 +263,7 @@ public class Database {
         return transactions;
     }
 
- // Update the status of a transaction by its ID
+    // Update the status of a transaction by its ID
     public static void setStatus(int transactionId, String newStatus) {
         List<Transaction> transactions = getPendingTransactions(transactionId); // Retrieve the transactions
 
@@ -209,26 +278,51 @@ public class Database {
         saveTransactionsToFile(transactions);
     }
 
-    
- // Method to validate user credentials (username and password)
+    // Method to validate user credentials (username and password)
     public static boolean validateUser(String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        System.out.println("\n=== Validating User ===");
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+        System.out.println("User file path: " + USER_FILE_PATH);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
+            int lineNumber = 1;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data[0].equals(username) && data[1].equals(password)) {
-                    return true;  // User exists and password matches
+                line = line.trim();
+                System.out.println("Line " + lineNumber + ": " + line);
+                
+                if (line.isEmpty()) {
+                    System.out.println("Skipping empty line");
+                    continue;
                 }
+                
+                String[] data = line.split(",");
+                System.out.println("Data length: " + data.length);
+                System.out.println("Data: " + Arrays.toString(data));
+                
+                if (data.length >= 3) {
+                    System.out.println("Username match: " + data[0].equals(username));
+                    System.out.println("Password match: " + data[2].equals(password));
+                    
+                    if (data[0].equals(username) && data[2].equals(password)) {
+                        System.out.println("User validated successfully!");
+                        return true;
+                    }
+                }
+                lineNumber++;
             }
         } catch (IOException e) {
             System.out.println("Error validating user: " + e.getMessage());
+            e.printStackTrace();
         }
-        return false;  // Invalid username or password
+        System.out.println("User validation failed!");
+        return false;
     }
 
- // Method to fetch the account balance from the database using the account ID
+    // Method to fetch the account balance from the database using the account ID
     public static double getAccountBalance(int accountId) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -245,33 +339,43 @@ public class Database {
         return 0.0;  // Return 0.0 if the account is not found
     }
 
-
     // Add a user to the file
     public static void addUser(String username, String password) {
-    	int userCount = 1;
+        System.out.println("\n=== Adding User ===");
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+        
+        int userCount = 1;
 
-        // Count existing users to generate a  ID
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        // Count existing users to generate an ID
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                userCount++;
+                if (!line.trim().isEmpty()) {
+                    userCount++;
+                }
             }
         } catch (IOException e) {
-            System.out.println("Error creating a new user");
+            System.out.println("Error reading user count: " + e.getMessage());
         }
 
         // create a user
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(username + "," + userCount + "," + password + "\n");
-            System.out.println("User has been added successfully.");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE_PATH, true))) {
+            String userData = username + "," + userCount + "," + password;
+            writer.write(userData + "\n");
+            System.out.println("User added successfully: " + userData);
+            
+            // Initialize account with balance and hourly wage
+            addAccount(userCount, 0.0, 0.0);
         } catch (IOException e) {
-            System.out.println("Error creating a new user");
+            System.out.println("Error creating a new user: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     // Check if a user exists by username
     public static boolean userExists(String username) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -287,7 +391,7 @@ public class Database {
 
     // Show all users
     public static void showUsers() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line); // Print each line (user data)
@@ -299,50 +403,77 @@ public class Database {
 
     // Get account by username
     public static Account getAccountByUsername(String username) {
-    	try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        System.out.println("\n=== Getting Account ===");
+        System.out.println("Username: " + username);
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
+            int lineNumber = 1;
             while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                System.out.println("Line " + lineNumber + ": " + line);
+                
+                if (line.isEmpty()) {
+                    System.out.println("Skipping empty line");
+                    continue;
+                }
+                
                 String[] data = line.split(",");
-                if (data.length >= 3 && data[0].equals(username)) {				//length contains username, id, password. so length >=3
+                System.out.println("Data length: " + data.length);
+                System.out.println("Data: " + Arrays.toString(data));
+                
+                if (data.length >= 3 && data[0].equals(username)) {
                     int accountId = Integer.parseInt(data[1].trim());
+                    System.out.println("Account found! ID: " + accountId);
                     return new Account(username, accountId, 0.0, 0.0);
                 }
+                lineNumber++;
             }
         } catch (IOException e) {
-            System.out.println("Error finding this user");
+            System.out.println("Error finding user: " + e.getMessage());
+            e.printStackTrace();
         }
+        System.out.println("No account found!");
         return null;
     }
 
-    
-    
-    
     // Update account balance in file (update balance in file storage)
     public static void updateAccountBalance(int iDnum, double newBalance) {
-        // Read the file, update the balance and rewrite it
         List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        boolean accountFound = false;
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                // Check if this is an account record (should have exactly 3 fields: id, balance, hourlyWage)
+                if (data.length == 3) {
+                    try {
+                        int accountId = Integer.parseInt(data[0].trim());
+                        if (accountId == iDnum) {
+                            // Update the balance while preserving other account data
+                            line = String.format("%d,%.2f,%s", iDnum, newBalance, data[2]);
+                            accountFound = true;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Skip invalid lines
+                        continue;
+                    }
+                }
                 lines.add(line);
             }
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
+            return;
         }
 
-        // Update the specific line for the account
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            String[] data = line.split(",");
-            if (Integer.parseInt(data[1]) == iDnum) {  // Assuming IDnum is the second element
-                data[2] = String.valueOf(newBalance);  // Update balance (assuming balance is the 3rd element)
-                lines.set(i, String.join(",", data));
-                break;
-            }
+        if (!accountFound) {
+            System.out.println("Account not found: " + iDnum);
+            return;
         }
 
         // Rewrite the file with updated data
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH))) {
             for (String line : lines) {
                 writer.write(line + "\n");
             }
@@ -353,7 +484,7 @@ public class Database {
 
     // Log a transaction (add to a separate file or append to the existing one)
     public static void logTransaction(int iDnum, double amount, String type, String description) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH, true))) {
             writer.write(iDnum + "," + amount + "," + type + "," + description + "\n");
             System.out.println("Transaction logged.");
         } catch (IOException e) {
@@ -369,12 +500,12 @@ public class Database {
     // Get total incoming transactions for an account
     public static double getTotalIncoming(int iDnum) {
         double total = 0.0;
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (Integer.parseInt(data[1]) == iDnum && Double.parseDouble(data[1]) > 0) {  // Assuming data[1] is amount
-                    total += Double.parseDouble(data[1]);
+                if (Integer.parseInt(data[0]) == iDnum && Double.parseDouble(data[0]) > 0) {  // Assuming data[0] is amount
+                    total += Double.parseDouble(data[0]);
                 }
             }
         } catch (IOException e) {
@@ -383,11 +514,8 @@ public class Database {
         return total;
     }
 
-
-
-    
     public static void saveTransactionsToFile(List<Transaction> transactions) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH))) {
             // Iterate over the list of transactions and write them to the file
             for (Transaction t : transactions) {
                 writer.write(t.getSender() + "," + t.getRecipient() + "," + 
@@ -398,17 +526,15 @@ public class Database {
         }
     }
 
-    
-    
     // Get total outgoing transactions for an account
     public static double getTotalOutgoing(int iDnum) {
         double total = 0.0;
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (Integer.parseInt(data[1]) == iDnum && Double.parseDouble(data[1]) < 0) {  // Assuming data[1] is amount
-                    total += Math.abs(Double.parseDouble(data[1]));  // Sum negative values (outgoing)
+                if (Integer.parseInt(data[0]) == iDnum && Double.parseDouble(data[0]) < 0) {  // Assuming data[0] is amount
+                    total += Math.abs(Double.parseDouble(data[0]));  // Sum negative values (outgoing)
                 }
             }
         } catch (IOException e) {
@@ -421,7 +547,6 @@ public class Database {
     public static void updateHourlyWage(int iDnum, double newHourlyWage) {
         // Similar to updateAccountBalance, read the file and update the hourly wage field
     }
-
 }
 
 

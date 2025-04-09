@@ -8,47 +8,47 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.HomeController">
+<AnchorPane style="-fx-background-color: #FFF7E6;" styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.HomeController">
     
     <!-- Separator Line -->
-    <Line endX="780" endY="80" startX="10" startY="80" stroke="white" strokeWidth="2" />
+    <Line endX="780" endY="80" startX="10" startY="80" stroke="#FFB499" strokeWidth="1.5" />
     
     <!-- Dashboard Label -->
-    <Label fx:id="dashboardLabel" layoutX="10" layoutY="90" styleClass="currentTab-label" text="Dashboard" />
+    <Label fx:id="dashboardLabel" layoutX="10" layoutY="90" style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="currentTab-label" text="Dashboard" />
     
     <!-- User Balance Information -->
-    <Label fx:id="balanceLabel" layoutX="10" layoutY="140" styleClass="title-label" text="Balance: 0.0" />
-    <Label fx:id="welcomeLabel" layoutX="155.0" layoutY="38.0" styleClass="title-label" text="Hi, " />
-    <Label fx:id="dateTimeLabel" layoutX="500" layoutY="140" styleClass="title-label" text="- - -" />
+    <Label fx:id="balanceLabel" layoutX="10.0" layoutY="129.0" style="-fx-text-fill: #666666; -fx-font-size: 18px; -fx-font-family: 'Segoe UI';" styleClass="title-label" text="Balance: 0.0" />
+    <Label fx:id="welcomeLabel" layoutX="57.0" layoutY="27.0" style="-fx-text-fill: #FF8A65; -fx-font-size: 32px; -fx-font-family: 'Segoe UI';" styleClass="title-label" text="Hi, " />
+    <Label fx:id="dateTimeLabel" layoutX="492.0" layoutY="102.0" style="-fx-text-fill: #666666; -fx-font-size: 24px; -fx-font-family: 'Segoe UI';" styleClass="title-label" text="- - -" />
     
     <!-- Placeholder Circle for Pie Chart -->
-    <Circle fx:id="placeholderCircle" fill="lightgray" layoutX="210" layoutY="350" radius="90" stroke="black" strokeWidth="2" />
+    <Circle fx:id="placeholderCircle" fill="#FFE0B2" layoutX="210" layoutY="350" radius="90" stroke="#FFB499" strokeWidth="1.5" />
 
     <!-- Pie Chart -->
-    <PieChart fx:id="pieChart" layoutX="10" layoutY="200" prefHeight="300" prefWidth="400" styleClass="pie-chart" />
+    <PieChart fx:id="pieChart" layoutX="31.0" layoutY="187.0" prefHeight="300" prefWidth="400" style="-fx-pie-color-1: #FFB74D; -fx-pie-color-2: #FF8A65; -fx-pie-color-3: #FFA41B; -fx-pie-color-4: #FFE0B2; -fx-background-color: transparent;" styleClass="friendly-pie-chart" />
 
     <!-- Recent Transactions Label -->
-    <Label fx:id="recentTransactionsLabel" layoutX="490" layoutY="220" styleClass="title-label" text="Recent Transactions" />
+    <Label fx:id="recentTransactionsLabel" layoutX="485.0" layoutY="161.0" style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="title-label" text="Recent Transactions" />
 
     <!-- Recent Transactions VBox -->
-    <VBox fx:id="recentTransactionsBox" layoutX="450" layoutY="250" prefHeight="250" prefWidth="300" spacing="5" styleClass="recent-transactions-box" />
+    <VBox fx:id="recentTransactionsBox" layoutX="450" layoutY="218.0" prefHeight="282.0" prefWidth="300" spacing="10" style="-fx-background-color: #FFFFFF; -fx-background-radius: 8; -fx-border-color: #FFB499; -fx-border-width: 1; -fx-border-radius: 8; -fx-padding: 10;" styleClass="recent-transactions-box" />
     
     <!-- Separator Line -->
-    <Line endX="780" endY="535" startX="10" startY="535" stroke="white" strokeWidth="2" />
+    <Line endX="780" endY="535" startX="10" startY="535" stroke="#FFB499" strokeWidth="1.5" />
     
     <!-- Bottom Navigation Buttons -->
-    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" styleClass="green-button" text="     Dashboard     " />
-    <Line endX="162" endY="592" startX="162" startY="545" stroke="white" strokeWidth="2" />
+    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="     Dashboard     " />
+    <Line endX="162" endY="592" startX="162" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" styleClass="styled-button" text=" Deposit/Withdrawal " />
-    <Line endX="356" endY="592" startX="356" startY="545" stroke="white" strokeWidth="2" />
+    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text=" Deposit/Withdrawal " />
+    <Line endX="356" endY="592" startX="356" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="sendreceiveButton" layoutX="369" layoutY="550" onAction="#handleSendReceiveButtonAction" styleClass="styled-button" text="    Send/Receive    " />
-    <Line endX="528" endY="592" startX="528" startY="545" stroke="white" strokeWidth="2" />
+    <Button fx:id="sendreceiveButton" layoutX="369" layoutY="550" onAction="#handleSendReceiveButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Send/Receive    " />
+    <Line endX="528" endY="592" startX="528" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="transactionsButton" layoutX="540" layoutY="550" onAction="#handleTransactionButtonAction" styleClass="styled-button" text="    Transactions    " />
-    <Line endX="695" endY="592" startX="695" startY="545" stroke="white" strokeWidth="2" />    
+    <Button fx:id="transactionsButton" layoutX="540" layoutY="550" onAction="#handleTransactionButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Transactions    " />
+    <Line endX="695" endY="592" startX="695" startY="545" stroke="#FFB499" strokeWidth="1.5" />    
 
-    <Button fx:id="backButton" layoutX="710" layoutY="550" onAction="#handleLogOutButtonAction" styleClass="styled-button" text="Log Out" />
+    <Button fx:id="backButton" layoutX="701.0" layoutY="550.0" onAction="#handleLogOutButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Log Out" />
 
 </AnchorPane>

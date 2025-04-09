@@ -1,2 +1,3 @@
 button color: #FFA41B	
 background: #FFF7E6	
+font:  #FF8A65  #666666

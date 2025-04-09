@@ -96,8 +96,8 @@ public class TransactionsController {
         // Populate the transactions box with transaction details
         for (Transaction transaction : transactions) {
             VBox transactionBox = new VBox(5);
-            transactionBox.setStyle("-fx-background-color: #3E3E3E; -fx-padding: 5; "
-                    + "-fx-border-color: #666666; -fx-border-width: 1; "
+            transactionBox.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 10; "
+                    + "-fx-border-color: #FFA41B; -fx-border-width: 1; "
                     + "-fx-border-radius: 5; -fx-background-radius: 5;");
             transactionBox.setPrefWidth(transactionScrollPane.getPrefWidth() - 20);
 
@@ -107,7 +107,7 @@ public class TransactionsController {
             Label descriptionLabel = new Label("Description: " + transaction.getDescription());
 
             // Apply consistent label styling
-            String labelStyle = "-fx-text-fill: #FFFFFF; -fx-font-size: 12px;";
+            String labelStyle = "-fx-text-fill: #333333; -fx-font-size: 12px;";
             senderLabel.setStyle(labelStyle);
             recipientLabel.setStyle(labelStyle);
             amountLabel.setStyle(labelStyle);

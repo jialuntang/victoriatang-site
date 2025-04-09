@@ -8,53 +8,53 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SendReceiveController">
+<AnchorPane style="-fx-background-color: #FFF7E6;" styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SendReceiveController">
 	
-	<Label layoutX="10" layoutY="10" styleClass="home-title-label" text="MyWallet" />
+	<Label layoutX="10" layoutY="10" style="-fx-text-fill: #FF8A65; -fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-background-color: #FFE0B2; -fx-padding: 5 15; -fx-background-radius: 15; -fx-border-color: #FFB499; -fx-border-width: 2; -fx-border-radius: 15;" styleClass="home-title-label" text="MyWallet" />
     <!-- Separator Line -->
-    <Line endX="780" endY="80" startX="10" startY="80" stroke="white" strokeWidth="2" />
+    <Line endX="780" endY="80" startX="10" startY="80" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Label layoutX="10" layoutY="90" styleClass="currentTab-label" text="Incoming Money" />
+    <Label layoutX="10" layoutY="90" style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="currentTab-label" text="Incoming Money" />
     
     
 	<!-- Incoming Money -->
-	<ScrollPane fx:id="incomingTransactionsScrollPane" layoutX="10" layoutY="140" prefHeight="350" prefWidth="360" styleClass="transaction-scroll-pane">
+	<ScrollPane fx:id="incomingTransactionsScrollPane" layoutX="10" layoutY="140" prefHeight="350" prefWidth="360" style="-fx-background: #FFF7E6; -fx-border-color: #FFB499; -fx-border-width: 1; -fx-border-radius: 8;" styleClass="transaction-scroll-pane">
 	
 	   <VBox fx:id="incomingTransactionsBox" layoutX="10" layoutY="140" prefHeight="370" prefWidth="300" styleClass="incoming-transactions-box">
 		</VBox>
  	</ScrollPane>
     
-    <Line endX="400" endY="100" startX="400" startY="510" stroke="white" strokeWidth="2" />
+    <Line endX="400" endY="100" startX="400" startY="510" stroke="#FFB499" strokeWidth="1.5" />
 
     <!-- Send Money -->
-    <VBox layoutX="500" layoutY="90" spacing="10">
-        <Label styleClass="currentTab-label" text="Send Money" />
-        <TextField fx:id="recipientField" promptText="Recipient Username" />
-        <TextField fx:id="amountField" promptText="Amount" />
-        <Button onAction="#handleSendMoneyAction" text="Send" />
+    <VBox layoutX="500" layoutY="90" spacing="15">
+        <Label style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="currentTab-label" text="Send Money" />
+        <TextField fx:id="recipientField" promptText="Recipient Username" style="-fx-background-color: white; -fx-prompt-text-fill: #999999; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" />
+        <TextField fx:id="amountField" promptText="Amount" style="-fx-background-color: white; -fx-prompt-text-fill: #999999; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" />
+        <Button fx:id="sendButton" onAction="#handleSendMoneyAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Send" />
     </VBox>
 
     
     <!-- Separator Line -->
-    <Line endX="780" endY="535" startX="10" startY="535" stroke="white" strokeWidth="2" />
+    <Line endX="780" endY="535" startX="10" startY="535" stroke="#FFB499" strokeWidth="1.5" />
 
     <!-- Bottom Navigation Buttons -->
-    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" onAction="#handleDashboardButtonAction" styleClass="styled-button" text="     Dashboard     " />
+    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" onAction="#handleDashboardButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="     Dashboard     " />
             
-    <Line endX="162" endY="592" startX="162" startY="545" stroke="white" strokeWidth="2" />
+    <Line endX="162" endY="592" startX="162" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" styleClass="styled-button" text=" Deposit/Withdrawal " />
+    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text=" Deposit/Withdrawal " />
     
-    <Line endX="356" endY="592" startX="356" startY="545" stroke="white" strokeWidth="2" />
+    <Line endX="356" endY="592" startX="356" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="void" layoutX="369" layoutY="550" styleClass="green-button" text="    Send/Receive    " />
+    <Button fx:id="sendreceiveButton" layoutX="369" layoutY="550" onAction="#handleSendReceiveButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Send/Receive    " />
     
-    <Line endX="528" endY="592" startX="528" startY="545" stroke="white" strokeWidth="2" />
+    <Line endX="528" endY="592" startX="528" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="transactionsButton" layoutX="540" layoutY="550" onAction="#handleTransactionButtonAction" styleClass="styled-button" text="    Transactions    " />
+    <Button fx:id="transactionsButton" layoutX="540" layoutY="550" onAction="#handleTransactionsButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Transactions    " />
     
-    <Line endX="695" endY="592" startX="695" startY="545" stroke="white" strokeWidth="2" />
+    <Line endX="695" endY="592" startX="695" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="logOutButton" layoutX="710" layoutY="550" onAction="#handleLogOutButtonAction" styleClass="styled-button" text="Log Out" />
+    <Button fx:id="logOutButton" layoutX="710" layoutY="550" onAction="#handleLogOutButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Log Out" />
 
 </AnchorPane>

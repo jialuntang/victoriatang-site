@@ -20,7 +20,7 @@
     </padding> -->
 
     <!-- App Title -->
-    <Text style="-fx-fill: #333333;" styleClass="title-text" text="MyWallet">
+    <Text style="-fx-fill: #FFB74D;" styleClass="title-text" text="MyWallet">
       <font>
          <Font size="48.0" />
       </font></Text>

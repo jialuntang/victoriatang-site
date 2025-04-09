@@ -29,16 +29,30 @@ public class LoginController {
      */
     @FXML
     private void handleLoginButtonAction() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert(AlertType.ERROR, "Login Failed", "Please enter both username and password.");
+            return;
+        }
 
         try {
-            Account account = Database.getAccountByUsername(username);
-            if (account != null && Database.validateUser(username, password)) {
-                CurrentSession.getInstance().setCurrentAccount(account);
-                showHomeScreen();
+            if (!Database.userExists(username)) {
+                showAlert(AlertType.ERROR, "Login Failed", "Username does not exist.");
+                return;
+            }
+
+            if (Database.validateUser(username, password)) {
+                Account account = Database.getAccountByUsername(username);
+                if (account != null) {
+                    CurrentSession.getInstance().setCurrentAccount(account);
+                    showHomeScreen();
+                } else {
+                    showAlert(AlertType.ERROR, "Login Failed", "Could not retrieve account information.");
+                }
             } else {
-                showAlert(AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                showAlert(AlertType.ERROR, "Login Failed", "Invalid password.");
             }
         } catch (Exception e) {
             e.printStackTrace();

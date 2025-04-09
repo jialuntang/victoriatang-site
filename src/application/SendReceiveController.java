@@ -27,6 +27,7 @@ public class SendReceiveController {
     @FXML private Button logOutButton;
     @FXML private Button dashboardButton;
     @FXML private Button DWbutton;
+    @FXML private Button sendreceiveButton;
     @FXML private Button transactionsButton;
     @FXML private TextField recipientField; // Username input
     @FXML private TextField amountField; // Amount input
@@ -246,5 +247,13 @@ public class SendReceiveController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    /**
+     * Handles navigation to the Send/Receive screen.
+     */
+    @FXML
+    private void handleSendReceiveButtonAction() {
+        navigateTo("/application/sendreceive.fxml", sendreceiveButton);
     }
 }

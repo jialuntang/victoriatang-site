@@ -9,7 +9,7 @@ public class JsonDataManager implements DataManager {
     private final AtomicInteger userIdCounter = new AtomicInteger(1);
     private final AtomicInteger accountIdCounter = new AtomicInteger(1);
     private final AtomicInteger transactionIdCounter = new AtomicInteger(1);
-    
+
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
     private final Map<Integer, Account> accounts = new ConcurrentHashMap<>();
     private final Map<Integer, Transaction> transactions = new ConcurrentHashMap<>();
@@ -46,10 +46,7 @@ public class JsonDataManager implements DataManager {
         int id = accountIdCounter.getAndIncrement();
         Account account = new Account(id, initialBalance, hourlyWage, user.getId());
         accounts.put(id, account);
-        
-        // Update the user with the account ID
         user.setAccountId(id);
-        
         return account;
     }
 
@@ -126,4 +123,4 @@ public class JsonDataManager implements DataManager {
         // In a real application, use a proper password hashing algorithm like bcrypt
         return Integer.toString(password.hashCode());
     }
-} 
+}

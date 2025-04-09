@@ -16,11 +16,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("Starting application");
-        System.out.println(Main.class.getResource("start.fxml"));
-
         try {   
             Main.primaryStage = primaryStage;
+            Database.initializeDatabase();
             showStartScreen();
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,7 +30,7 @@ public class Main extends Application {
             Parent root = FXMLLoader.load(Main.class.getResource("start.fxml"));
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(Main.class.getResource("styles.css").toExternalForm());
-            primaryStage.setTitle("Finance App");
+            primaryStage.setTitle("MyWallet");
             primaryStage.setScene(scene);
             primaryStage.setResizable(true);
             primaryStage.centerOnScreen();
@@ -47,7 +45,7 @@ public class Main extends Application {
             Parent root = FXMLLoader.load(Main.class.getResource("home.fxml"));
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(Main.class.getResource("styles.css").toExternalForm());
-            primaryStage.setTitle("Finance App - Home");
+            primaryStage.setTitle("MyWallet - Home");
             primaryStage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,22 +53,9 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        // Set a global uncaught exception handler
-//        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-//            System.err.println("Uncaught exception in thread " + thread.getName());
-//            throwable.printStackTrace();
-//        });
-        System.out.println("Starting application");
-        System.out.println(Main.class.getResource("start.fxml"));
-
-
         // Initialize the data manager and finance service
         DataManager dataManager = new JsonDataManager();
         financeService = new FinanceService(dataManager);
-
-        // Add some test users and accounts for demonstration
-        financeService.createUser("john_doe", "password123");
-        financeService.createUser("jane_smith", "mypassword");
 
         // Platform-specific initialization
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
@@ -83,7 +68,6 @@ public class Main extends Application {
         try {
             Application.launch(args);
         } catch (Exception e) {
-            System.err.println("Failed to launch JavaFX application");
             e.printStackTrace();
             System.exit(1);
         }
