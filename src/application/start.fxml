@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Import required JavaFX components -->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<!-- <?import javafx.scene.layout.Insets?> -->
+<!-- Root container -->
+
+<VBox alignment="CENTER" prefHeight="326.0" prefWidth="231.0" spacing="20" style="-fx-background-color: #FFF7E6;" styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StartController">
+    <!-- <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding> -->
+
+    <!-- App Title -->
+    <Text style="-fx-fill: #333333;" styleClass="title-text" text="MyWallet">
+      <font>
+         <Font size="48.0" />
+      </font></Text>
+
+    <VBox fx:id="loginBox" alignment="CENTER" fillWidth="false" spacing="10">
+        <TextField fx:id="loginUsername" promptText="Username" />
+        <PasswordField fx:id="loginPassword" promptText="Password" />
+        <Button onAction="#handleLogin" style="-fx-background-color: #FFA41B;" styleClass="primary-button" text="Login" />
+        <Hyperlink onAction="#handleCreateAccountLinkAction" text="Create Account" />
+
+    </VBox>
+
+
+
+    <Label fx:id="errorLabel" styleClass="error-label" />
+
+    <!-- Guest Mode Button -->
+    <Button fx:id="guestButton" onAction="#handleGuestButtonAction" style="-fx-background-color: #FFA41B;" styleClass="styled-button" text="Continue as Guest" />
+
+    <!-- About Button -->
+    <Button fx:id="aboutButton" onAction="#handleAboutButtonAction" style="-fx-background-color: #FFA41B;" styleClass="styled-button" text="About" />
+
+    <!-- Exit Button -->
+    <Button fx:id="exitButton" onAction="#handleExitButtonAction" style="-fx-background-color: #FFA41B;" styleClass="styled-button" text="Exit" />
+
+</VBox>

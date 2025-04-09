@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- Root element of the FXML, linking to the corresponding controller -->
+
+<VBox alignment="TOP_CENTER" prefHeight="600" prefWidth="800" spacing="20" style="-fx-background-color: #FFF7E6;" styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AboutController">
+
+    <!-- About Title Label configuration -->
+    <Label styleClass="home-title-label" text="About MyWallet">
+      <font>
+         <Font size="18.0" />
+      </font></Label>
+
+    <!-- Read-only Text Area for displaying about content -->
+    <TextArea fx:id="aboutText" editable="false" prefHeight="400" prefWidth="760" styleClass="description-textarea" wrapText="true" />
+
+    <!-- Back Button configuration -->
+    <Button fx:id="backButton" onAction="#handleBackButtonAction" style="-fx-background-color: #FFA41B;" styleClass="styled-button" text="Back" />
+
+</VBox>

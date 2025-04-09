@@ -1,0 +1,403 @@
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.title-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.secondary-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 5;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #3498db;
+}
+
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+}
+
+.hyperlink {
+    -fx-text-fill: #3498db;
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-underline: true;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-padding: 20;
+}
+
+.balance-text {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.transaction-list {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+}
+
+.transaction-item {
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10 0;
+}
+
+.transaction-amount-positive {
+    -fx-text-fill: #27ae60;
+    -fx-font-weight: bold;
+}
+
+.transaction-amount-negative {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #ecf0f1;
+}
+
+.status-pending {
+    -fx-text-fill: #f39c12;
+}
+
+.status-completed {
+    -fx-text-fill: #27ae60;
+}
+
+.status-rejected {
+    -fx-text-fill: #e74c3c;
+}
+
+.status-cancelled {
+    -fx-text-fill: #95a5a6;
+}
+
+.root-pane {
+    -fx-background-color: #2E2E2E;
+    -fx-padding: 20px;
+}
+
+/* Title label styling */
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Description label styling */
+.description-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #CCCCCC;
+}
+
+/* Styled button */
+.styled-button {
+    -fx-background-color: #444444;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Title label styling */
+.home-title-label {
+     -fx-font-family: "Arial Black";
+    -fx-font-size: 24px;
+    -fx-text-fill: linear-gradient(from 0% 0% to 100% 100%, GREY, BLACK);
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.8), 10, 0.5, 0, 0);
+    -fx-padding: 10px;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #e0e0e0, #a0a0a0);
+    -fx-background-radius: 10;
+    -fx-border-color: #000000;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10;
+    -fx-alignment: center;
+}
+
+/* Normal state */
+.green-button {
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-text-fill: white;          /* White text */
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+.red-button {
+    -fx-background-color: red; /* Green background */
+    -fx-text-fill: white;          /* White text */
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.clock-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000;
+    -fx-background-color: #e0e0e0;
+    -fx-padding: 10px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 2px;
+    -fx-background-insets: 2;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+
+.currentTab-label {
+     -fx-font-family: "Arial Black";
+    -fx-font-size: 24px;
+    -fx-text-fill: linear-gradient(to right, #ff7eb3, #ff758c);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+    -fx-padding: 10 0 10 0;
+}
+
+.transaction-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF; /* White text for better contrast on dark background */
+    -fx-padding: 5;
+}
+
+.transaction-scroll-pane {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-control-inner-background: #2E2E2E; /* Inner area background */
+    -fx-border-color: #1E1E1E; /* Border color */
+    -fx-border-radius: 5px;
+    -fx-padding: 10;
+}
+
+.transaction-box {
+    -fx-background-color: #3E3E3E; /* Background color for transaction box */
+    -fx-border-color: #2E2E2E; /* Border color */
+    -fx-border-radius: 5px;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent; /* Ensure no white background in the viewport */
+}
+
+/* General scroll bar styling */
+.scroll-bar {
+    -fx-background-color: #2E2E2E; /* Background color of the scroll bar track */
+    -fx-border-color: #1E1E1E; /* Border color of the scroll bar */
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Thumb (the draggable part of the scroll bar) */
+.scroll-bar > .thumb {
+    -fx-background-color: #4C4C4C; /* Color of the scroll thumb */
+    -fx-background-radius: 5px; /* Rounded corners for the thumb */
+    -fx-border-color: #1E1E1E; /* Border color for the thumb */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+/* Hover effect for the thumb */
+.scroll-bar > .thumb:hover {
+    -fx-background-color: #5C5C5C; /* Slightly lighter color on hover */
+}
+
+/* Increment and Decrement buttons (arrows) */
+.scroll-bar > .increment-button, .scroll-bar > .decrement-button {
+    -fx-background-color: #3E3E3E; /* Background color for the buttons */
+    -fx-background-radius: 5px;
+    -fx-border-color: #2E2E2E;
+}
+
+/* Arrows inside the buttons */
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-background-color: transparent; /* Transparent background for arrows */
+    -fx-shape: "M0 0 L8 4 L0 8 Z"; /* Custom shape for arrows */
+    -fx-fill: #FFFFFF; /* Color of the arrow */
+}
+
+/* Hover effect for the buttons */
+.scroll-bar > .increment-button:hover, .scroll-bar > .decrement-button:hover {
+    -fx-background-color: #4C4C4C; /* Lighter color on hover */
+}
+
+/* Vertical scroll bar specifics */
+.scroll-bar:vertical {
+    -fx-pref-width: 10px; /* Width of the vertical scroll bar */
+}
+
+/* Horizontal scroll bar specifics */
+.scroll-bar:horizontal {
+    -fx-pref-height: 10px; /* Height of the horizontal scroll bar */
+}
+
+/* Container for incoming transactions */
+.incoming-transactions-box {
+    -fx-background-color: #3E3E3E; /* Dark gray background */
+    -fx-border-color: #2E2E2E; /* Slightly darker border */
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 15;
+    -fx-spacing: 15; /* Spacing between transaction items */
+}
+
+/* Individual transaction item */
+.transaction-item {
+    -fx-background-color: #4E4E4E; /* Lighter gray background for each transaction */
+    -fx-padding: 10;
+    -fx-border-color: #6E6E6E; /* Subtle border for each transaction */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-spacing: 10; /* Space between label and button */
+}
+
+/* From Label */
+.from-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700; /* Gold color */
+}
+
+/* Amount Label */
+.amount-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00FF00; /* Green color for amount */
+}
+
+/* Description Label */
+.description-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF; /* White color */
+    -fx-opacity: 0.8; /* Slightly transparent */
+}
+
+/* Accept Button */
+.accept-button {
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand; /* Hand cursor on hover */
+}
+
+.accept-button:hover {
+    -fx-background-color: #45A049; /* Darker green on hover */
+}
+
+.pie-chart {
+    -fx-background-color: transparent; /* Transparent background */
+}
+
+.chart-pie.data0 {
+    -fx-pie-color: green; /* Green for incoming */
+}
+
+
+.chart-pie.data1 {
+    -fx-pie-color: red; /* Red for outgoing */
+}
+
+/* Style for pie chart labels */
+.chart-pie-label {
+    -fx-fill: white; /* White text color */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Style for the pie chart title */
+.chart-title {
+    -fx-text-fill: white; /* White text color */
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.recent-transactions-box {
+    -fx-background-color: transparent;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+    -fx-font-size: 14px;
+}
+
+.recent-transactions-box Label {
+	-fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF; /* White text for better contrast on dark background */
+    -fx-padding: 5;
+}
+
+/* Description TextArea styling */
+.description-textarea {
+    -fx-font-size: 14px;
+    -fx-text-fill: black; /* White text */
+    -fx-background-color: #3C3C3C; /* Dark gray background */
+    -fx-border-color: #555555; /* Border around TextArea */
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
+
+
+
+
+
+
+
+

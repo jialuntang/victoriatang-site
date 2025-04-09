@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Import required JavaFX components -->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<!-- Root container -->
+
+<AnchorPane styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.TransactionsController">
+
+    <!-- App Title -->
+    <Label layoutX="10" layoutY="10" styleClass="home-title-label" text="MyWallet" />
+
+    <!-- Separator Line -->
+    <Line endX="780" endY="80" startX="10" startY="80" stroke="white" strokeWidth="2" />
+
+    <!-- Page Title -->
+    <Label fx:id="transactionLabel" layoutX="10" layoutY="90" styleClass="currentTab-label" text="Transactions" />
+
+    <!-- Scrollable Transaction List -->
+    <ScrollPane fx:id="transactionScrollPane" hbarPolicy="NEVER" layoutX="20" layoutY="140" prefHeight="380" prefWidth="760" styleClass="transaction-scroll-pane" vbarPolicy="ALWAYS">
+
+        <VBox fx:id="transactionsBox" spacing="10" styleClass="transaction-box">
+              
+            <!-- Placeholder Label (optional, dynamic content should be loaded via controller) -->
+            <Label styleClass="title-label" text="Transaction History" />
+              
+        </VBox>
+    </ScrollPane>
+
+    <!-- Separator Line -->
+    <Line endX="780" endY="535" startX="10" startY="535" stroke="white" strokeWidth="2" />
+
+       <!-- Bottom Navigation Buttons -->
+    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" onAction="#handleDashboardButtonAction" styleClass="styled-button" text="     Dashboard     " />
+            
+    <Line endX="162" endY="592" startX="162" startY="545" stroke="white" strokeWidth="2" />
+    
+    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" styleClass="styled-button" text=" Deposit/Withdrawal " />
+    
+    <Line endX="356" endY="592" startX="356" startY="545" stroke="white" strokeWidth="2" />
+    
+    <Button fx:id="sendreceiveButton" layoutX="369" layoutY="550" onAction="#handleSendReceiveButtonAction" styleClass="styled-button" text="    Send/Receive    " />
+    
+    <Line endX="528" endY="592" startX="528" startY="545" stroke="white" strokeWidth="2" />
+    
+    <Button fx:id="void" layoutX="540" layoutY="550" styleClass="green-button" text="    Transactions    " />
+    
+    <Line endX="695" endY="592" startX="695" startY="545" stroke="white" strokeWidth="2" />
+    
+    <Button fx:id="logOutButton" layoutX="710" layoutY="550" onAction="#handleLogOutButtonAction" styleClass="styled-button" text="Log Out" />
+
+
+</AnchorPane>
