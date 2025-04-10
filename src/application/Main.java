@@ -1,6 +1,5 @@
 package application;
 
-import application.data.DataManager;
 import application.data.JsonDataManager;
 import application.services.FinanceService;
 import javafx.application.Application;
@@ -13,12 +12,14 @@ public class Main extends Application {
 
     private static Stage primaryStage;
     private static FinanceService financeService;
+    private static JsonDataManager dataManager;
 
     @Override
     public void start(Stage primaryStage) {
         try {   
             Main.primaryStage = primaryStage;
-            Database.initializeDatabase();
+            dataManager = new JsonDataManager();
+            financeService = new FinanceService(dataManager);
             showStartScreen();
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,10 +54,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        // Initialize the data manager and finance service
-        DataManager dataManager = new JsonDataManager();
-        financeService = new FinanceService(dataManager);
-
         // Platform-specific initialization
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             System.setProperty("prism.order", "sw");
@@ -75,6 +72,10 @@ public class Main extends Application {
 
     public static FinanceService getFinanceService() {
         return financeService;
+    }
+
+    public static JsonDataManager getDataManager() {
+        return dataManager;
     }
 }
 

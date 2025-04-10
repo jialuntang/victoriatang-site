@@ -6,6 +6,7 @@ import java.util.List;
 import application.model.Transaction;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import application.data.JsonDataManager;
 
 public class Account {
     private final int id;
@@ -15,6 +16,8 @@ public class Account {
     private DoubleProperty balance;
     private DoubleProperty hourlyWage;
     private List<Transaction> transactionHistory;
+    private JsonDataManager dataManager = Main.getDataManager();
+    private boolean isUpdatingBalance = false;
 
     public Account(int id, String username, String passwordHash) {
         this.id = id;
@@ -41,11 +44,16 @@ public class Account {
     }
 
     public void setBalance(double newBalance) {
-        this.balance.set(newBalance);
-        try {
-            Database.updateAccountBalance(username, newBalance);
-        } catch (Exception e) {
-            System.out.println("Error updating balance in database: " + e.getMessage());
+        if (!isUpdatingBalance) {
+            try {
+                isUpdatingBalance = true;
+                this.balance.set(newBalance);
+                dataManager.updateAccountBalance(this, newBalance);
+            } finally {
+                isUpdatingBalance = false;
+            }
+        } else {
+            this.balance.set(newBalance);
         }
     }
 
@@ -77,7 +85,7 @@ public class Account {
             transactionHistory.add(transaction);
             
             // Log transaction in database
-            Database.logTransaction(username, amount, description);
+            dataManager.logTransaction(username, amount, description);
             
             // Update balance
             updateBalance(amount);
@@ -102,7 +110,7 @@ public class Account {
 
     private void loadTransactionHistory() {
         try {
-            List<Transaction> recentTransactions = Database.getRecentTransactions(id, 10);
+            List<Transaction> recentTransactions = dataManager.getRecentTransactions(id, 10);
             if (recentTransactions != null) {
                 transactionHistory = recentTransactions;
             }
@@ -116,7 +124,7 @@ public class Account {
 
     public double getTotalIncoming() {
         try {
-            return Database.getTotalIncoming(id);
+            return dataManager.getTotalIncoming(this);
         } catch (Exception e) {
             System.out.println("Error getting total incoming: " + e.getMessage());
             return 0.0;
@@ -125,7 +133,7 @@ public class Account {
 
     public double getTotalOutgoing() {
         try {
-            return Database.getTotalOutgoing(id);
+            return dataManager.getTotalOutgoing(this);
         } catch (Exception e) {
             System.out.println("Error getting total outgoing: " + e.getMessage());
             return 0.0;

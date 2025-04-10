@@ -37,7 +37,7 @@ public class FinanceService {
             return false;
         }
         Account account = dataManager.createAccount(username, password);
-        dataManager.createAccount(account, 0.0, 0.0);
+        currentAccount = account;
         return true;
     }
 

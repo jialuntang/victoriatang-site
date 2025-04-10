@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import application.data.JsonDataManager;
 
 /**
  * Controller class for handling user login in the JavaFX application.
@@ -21,6 +22,8 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
     @FXML private Button backButton;
+
+    private JsonDataManager dataManager = Main.getDataManager();
 
     /**
      * Handles the login button action.
@@ -37,26 +40,21 @@ public class LoginController {
             return;
         }
 
-        try {
-            if (!Database.userExists(username)) {
-                showAlert(AlertType.ERROR, "Login Failed", "Username does not exist.");
-                return;
-            }
+        if (!dataManager.accountExists(username)) {
+            showAlert(AlertType.ERROR, "Login Failed", "Username does not exist.");
+            return;
+        }
 
-            if (Database.validateUser(username, password)) {
-                Account account = Database.getAccountByUsername(username);
-                if (account != null) {
-                    CurrentSession.getInstance().setCurrentAccount(account);
-                    showHomeScreen();
-                } else {
-                    showAlert(AlertType.ERROR, "Login Failed", "Could not retrieve account information.");
-                }
+        if (dataManager.validateAccount(username, password)) {
+            Account account = dataManager.getAccountByUsername(username);
+            if (account != null) {
+                CurrentSession.getInstance().setCurrentAccount(account);
+                showHomeScreen();
             } else {
-                showAlert(AlertType.ERROR, "Login Failed", "Invalid password.");
+                showAlert(AlertType.ERROR, "Login Failed", "Could not retrieve account information.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Error", "An unexpected error occurred.");
+        } else {
+            showAlert(AlertType.ERROR, "Login Failed", "Invalid password.");
         }
     }
 

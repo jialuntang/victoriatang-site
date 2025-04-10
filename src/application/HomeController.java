@@ -22,10 +22,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import javafx.scene.control.ListView;
 
 import application.Account;
 import application.CurrentSession;
-import application.Database;
+import application.data.JsonDataManager;
 import application.model.Transaction;
 
 /**
@@ -35,6 +36,7 @@ import application.model.Transaction;
 public class HomeController {
 
     private Account account;
+    private JsonDataManager dataManager = Main.getDataManager();
 
     public void setAccount(Account account) {
         this.account = account;
@@ -46,6 +48,7 @@ public class HomeController {
     @FXML private Circle placeholderCircle;
     @FXML private PieChart pieChart;
     @FXML private VBox recentTransactionsBox;
+    @FXML private ListView<Transaction> recentTransactionsList;
 
     /**
      * Initializes the Home screen.
@@ -53,16 +56,21 @@ public class HomeController {
      */
     @FXML
     public void initialize() {
-        Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+        updateAccountInfo();
+        startDateTimeUpdater();
+    }
 
+    private void updateAccountInfo() {
+        Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            // Update balance from database
-            double currentBalance = Database.getAccountBalance(currentAccount.getUsername());
-            currentAccount.setBalance(currentBalance);
-            
-            // Bind balance label to account balance
-            balanceLabel.textProperty().bind(currentAccount.balanceProperty().asString("Balance: $%.2f"));
-            
+            // Update balance
+            double currentBalance = dataManager.getAccountBalance(currentAccount.getUsername());
+            balanceLabel.setText(String.format("Balance: $%.2f", currentBalance));
+
+            // Update recent transactions
+            List<Transaction> transactions = dataManager.getRecentTransactions(currentAccount.getId(), 5);
+            recentTransactionsList.getItems().setAll(transactions);
+
             // Update UI elements
             updatePieChart();
             loadRecentTransactions();
@@ -73,8 +81,6 @@ public class HomeController {
             placeholderCircle.setVisible(true);
             welcomeLabel.setText("Hi, Guest");
         }
-
-        startDateTimeUpdater();
     }
 
     /**
@@ -93,13 +99,19 @@ public class HomeController {
     public void updatePieChart() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            double incoming = Database.getTotalIncoming(currentAccount.getIDnum());
-            double outgoing = Database.getTotalOutgoing(currentAccount.getIDnum());
+            double incoming = dataManager.getTotalIncoming(currentAccount);
+            double outgoing = dataManager.getTotalOutgoing(currentAccount);
             
             pieChart.getData().clear();
-            pieChart.getData().add(new PieChart.Data("Incoming", incoming));
-            pieChart.getData().add(new PieChart.Data("Outgoing", outgoing));
+            PieChart.Data incomingData = new PieChart.Data("Incoming", incoming);
+            PieChart.Data outgoingData = new PieChart.Data("Outgoing", outgoing);
+            pieChart.getData().addAll(incomingData, outgoingData);
+            
+            // Style the pie chart labels
             pieChart.setTitle("Transaction Overview");
+            pieChart.setStyle("-fx-pie-label-fill: #666666;");
+            
+            // Make the placeholder circle invisible
             placeholderCircle.setVisible(false);
         }
     }
@@ -110,7 +122,7 @@ public class HomeController {
     private void loadRecentTransactions() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            List<Transaction> transactions = Database.getRecentTransactions(currentAccount.getIDnum(), 5);
+            List<Transaction> transactions = dataManager.getRecentTransactions(currentAccount.getId(), 5);
             recentTransactionsBox.getChildren().clear();
             
             for (Transaction transaction : transactions) {
@@ -144,11 +156,12 @@ public class HomeController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/depwidth.fxml"));
             Parent root = loader.load();
+            DepWidthController controller = loader.getController();
+            Stage stage = (Stage) DWbutton.getScene().getWindow();
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) DWbutton.getScene().getWindow();
-            primaryStage.setScene(scene);
-        } catch (Exception e) {
+            stage.setScene(scene);
+        } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to navigate to deposit/withdraw screen.");
         }

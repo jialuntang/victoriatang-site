@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import application.data.JsonDataManager;
 
 /**
  * Controller for handling deposit and withdrawal operations in the application.
@@ -28,6 +29,7 @@ public class DepWidthController {
     
     @FXML private Label depWitLabel,balanceLabel,welcomeLabel;
 
+    private JsonDataManager dataManager = Main.getDataManager();
     
     /**
      * Initializes the controller with the current account.
@@ -36,7 +38,7 @@ public class DepWidthController {
     public void initialize() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            double balance = Database.getAccountBalance(currentAccount.getUsername());
+            double balance = dataManager.getAccountBalance(currentAccount.getUsername());
             currentAccount.setBalance(balance); // Sync balance with CurrentSession
             balanceLabel.textProperty().bind(currentAccount.balanceProperty().asString("Balance: $%.2f"));
         } else {
@@ -61,8 +63,8 @@ public class DepWidthController {
             if (currentAccount != null) {
                 double newBalance = currentAccount.getBalance() + depAmount;
                 currentAccount.setBalance(newBalance);
-                Database.updateAccountBalance(currentAccount.getUsername(), newBalance);
-                Database.logTransaction(currentAccount.getUsername(), depAmount, "Deposit");
+                dataManager.updateAccountBalance(currentAccount, newBalance);
+                dataManager.logTransaction(currentAccount.getUsername(), depAmount, "Deposit");
                 updateHomePieChart();
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to deposit money.");
@@ -94,8 +96,8 @@ public class DepWidthController {
 
                 double newBalance = currentAccount.getBalance() - witAmount;
                 currentAccount.setBalance(newBalance);
-                Database.updateAccountBalance(currentAccount.getUsername(), newBalance);
-                Database.logTransaction(currentAccount.getUsername(), -witAmount, "Withdraw");
+                dataManager.updateAccountBalance(currentAccount, newBalance);
+                dataManager.logTransaction(currentAccount.getUsername(), -witAmount, "Withdraw");
                 updateHomePieChart();
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to withdraw money.");
