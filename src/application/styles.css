@@ -209,57 +209,57 @@
 
 .transaction-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #FFFFFF; /* White text for better contrast on dark background */
+    -fx-text-fill: #666666; /* Dark gray text for better readability */
     -fx-padding: 5;
 }
 
 .transaction-scroll-pane {
-    -fx-background-color: transparent; /* Transparent background */
-    -fx-control-inner-background: #2E2E2E; /* Inner area background */
-    -fx-border-color: #1E1E1E; /* Border color */
+    -fx-background-color: #FFF7E6; /* Light cream background to match app theme */
+    -fx-control-inner-background: #FFF7E6; /* Inner area background */
+    -fx-border-color: #FFB499; /* Coral border to match theme */
     -fx-border-radius: 5px;
     -fx-padding: 10;
 }
 
 .transaction-box {
-    -fx-background-color: #3E3E3E; /* Background color for transaction box */
-    -fx-border-color: #2E2E2E; /* Border color */
+    -fx-background-color: #FFF7E6; /* Light cream background */
+    -fx-border-color: #FFB499; /* Coral border */
     -fx-border-radius: 5px;
     -fx-padding: 10;
     -fx-spacing: 10;
 }
 
 .scroll-pane > .viewport {
-    -fx-background-color: transparent; /* Ensure no white background in the viewport */
+    -fx-background-color: #FFF7E6; /* Light cream background */
 }
 
 /* General scroll bar styling */
 .scroll-bar {
-    -fx-background-color: #2E2E2E; /* Background color of the scroll bar track */
-    -fx-border-color: #1E1E1E; /* Border color of the scroll bar */
+    -fx-background-color: #FFF7E6; /* Light cream background */
+    -fx-border-color: #FFB499; /* Coral border */
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
 
 /* Thumb (the draggable part of the scroll bar) */
 .scroll-bar > .thumb {
-    -fx-background-color: #4C4C4C; /* Color of the scroll thumb */
-    -fx-background-radius: 5px; /* Rounded corners for the thumb */
-    -fx-border-color: #1E1E1E; /* Border color for the thumb */
+    -fx-background-color: #FFB499; /* Coral color for thumb */
+    -fx-background-radius: 5px;
+    -fx-border-color: #FF8A65;
     -fx-border-width: 1px;
     -fx-border-radius: 5px;
 }
 
 /* Hover effect for the thumb */
 .scroll-bar > .thumb:hover {
-    -fx-background-color: #5C5C5C; /* Slightly lighter color on hover */
+    -fx-background-color: #FF8A65; /* Darker coral on hover */
 }
 
 /* Increment and Decrement buttons (arrows) */
 .scroll-bar > .increment-button, .scroll-bar > .decrement-button {
-    -fx-background-color: #3E3E3E; /* Background color for the buttons */
+    -fx-background-color: #FFF7E6; /* Light cream background */
     -fx-background-radius: 5px;
-    -fx-border-color: #2E2E2E;
+    -fx-border-color: #FFB499;
 }
 
 /* Arrows inside the buttons */
@@ -297,13 +297,13 @@
 
 /* Individual transaction item */
 .transaction-item {
-    -fx-background-color: #4E4E4E; /* Lighter gray background for each transaction */
+    -fx-background-color: #FFFFFF; /* White background */
     -fx-padding: 10;
-    -fx-border-color: #6E6E6E; /* Subtle border for each transaction */
+    -fx-border-color: #FFB499; /* Coral border */
     -fx-border-width: 1px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-    -fx-spacing: 10; /* Space between label and button */
+    -fx-spacing: 10;
 }
 
 /* From Label */
@@ -347,31 +347,39 @@
 }
 
 .chart-pie.data0 {
-    -fx-pie-color: green; /* Green for incoming */
+    -fx-pie-color: #82B1FF; /* Soft blue for incoming */
 }
 
-
 .chart-pie.data1 {
-    -fx-pie-color: red; /* Red for outgoing */
+    -fx-pie-color: #FF9E80; /* Soft coral for outgoing */
 }
 
 /* Style for pie chart labels */
 .chart-pie-label {
-    -fx-fill: white; /* White text color */
+    -fx-fill: #FF8A65; /* Coral color to match theme */
     -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
 /* Style for the pie chart title */
 .chart-title {
-    -fx-text-fill: white; /* White text color */
+    -fx-text-fill: #FF8A65; /* Coral color to match theme */
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
 
-.recent-transactions-box {
+/* Style for pie chart legend */
+.chart-legend {
     -fx-background-color: transparent;
-    -fx-border-color: #ccc;
+}
+
+.chart-legend-item {
+    -fx-text-fill: #FF8A65; /* Coral color to match theme */
+}
+
+.recent-transactions-box {
+    -fx-background-color: #FFF7E6; /* Light cream background */
+    -fx-border-color: #FFB499;
     -fx-border-width: 1px;
     -fx-padding: 10px;
     -fx-spacing: 10px;
@@ -379,8 +387,8 @@
 }
 
 .recent-transactions-box Label {
-	-fx-font-size: 14px;
-    -fx-text-fill: #FFFFFF; /* White text for better contrast on dark background */
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666; /* Dark gray text for better readability */
     -fx-padding: 5;
 }
 

@@ -3,3 +3,6 @@ background: #FFF7E6
 font:  #FF8A65  #666666
 
 about: english/chinese 
+photo: 
+
+other: styles.css

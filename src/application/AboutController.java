@@ -39,10 +39,8 @@ public class AboutController {
 
         			- Manage recent transactions
    
-
         			- Secure, personalized login
 
-        			- Send and receive money easily
         			
         		欢迎使用 MyWallet！
 
@@ -56,7 +54,6 @@ public class AboutController {
 
         			- 安全个性化登录
 
-        			- 便捷的收付款功能
             
             """);
     }
