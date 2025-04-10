@@ -11,13 +11,16 @@ public class Account {
     private final int id;
     private final int userId;
     private String username;
+    private String passwordHash;
     private DoubleProperty balance;
     private DoubleProperty hourlyWage;
     private List<Transaction> transactionHistory;
 
-    public Account(int id, double initialBalance, double initialHourlyWage, int userId) {
+    public Account(int id, String username, String passwordHash, double initialBalance, double initialHourlyWage) {
         this.id = id;
-        this.userId = userId;
+        this.userId = id; // Using account id as user id since we're merging
+        this.username = username;
+        this.passwordHash = passwordHash;
         this.balance = new SimpleDoubleProperty(initialBalance);
         this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
         this.transactionHistory = new ArrayList<>();
@@ -26,8 +29,9 @@ public class Account {
 
     public Account(String username, int id, double initialBalance, double initialHourlyWage) {
         this.id = id;
-        this.userId = 0; // This constructor is used for UI, userId not needed
+        this.userId = id;
         this.username = username;
+        this.passwordHash = ""; // Empty password hash for UI constructor
         this.balance = new SimpleDoubleProperty(initialBalance);
         this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
         this.transactionHistory = new ArrayList<>();
@@ -55,21 +59,17 @@ public class Account {
         }
     }
 
-    public double getHourlyWage() {
-        return hourlyWage.get();
-    }
-
-    public void setHourlyWage(double newHourlyWage) {
-        this.hourlyWage.set(newHourlyWage);
-        try {
-            Database.updateHourlyWage(id, newHourlyWage);
-        } catch (Exception e) {
-            System.out.println("Error updating hourly wage in database: " + e.getMessage());
-        }
-    }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public DoubleProperty balanceProperty() {
@@ -140,5 +140,10 @@ public class Account {
             System.out.println("Error getting total outgoing: " + e.getMessage());
             return 0.0;
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User: %s, Balance: $%.2f", username, balance.get());
     }
 }

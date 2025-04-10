@@ -114,7 +114,7 @@ public class CreateAccountController {
             HomeController controller = loader.getController();
             Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
             if (currentAccount != null) {
-                User user = new User(currentAccount.getUsername(), "");
+                User user = currentAccount.getUser();
                 controller.setUser(user);
             }
             

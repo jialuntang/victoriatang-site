@@ -1,20 +1,17 @@
 package application.data;
 
-import application.model.*;
-import application.Account;
 import java.util.List;
 
+import application.Account;
+import application.model.Transaction;
+import application.model.TransactionStatus;
+
 public interface DataManager {
-    // User operations
-    boolean authenticateUser(String username, String password);
-    User createUser(String username, String password);
-    User getUserByUsername(String username);
-    
     // Account operations
-    Account createAccount(User user, double initialBalance, double hourlyWage);
-    Account getAccountById(int accountId);
-    void updateAccountBalance(Account account, double newBalance);
-    void updateHourlyWage(Account account, double newWage);
+    boolean authenticateUser(String username, String password);
+    Account createUser(String username, String password);
+    Account getUserByUsername(String username);
+    Account createAccount(Account account, double initialBalance, double hourlyWage);
     
     // Transaction operations
     Transaction createTransaction(Account sender, Account recipient, double amount, String description);
@@ -25,4 +22,15 @@ public interface DataManager {
     // Financial operations
     double getTotalIncoming(Account account);
     double getTotalOutgoing(Account account);
+    void updateAccountBalance(Account account, double newBalance);
+    void showUsers();
+    List<Transaction> getRecentTransactions(int accountId, int limit);
+    void addUser(String username, String password);
+    boolean userExists(String username);
+    boolean validateUser(String username, String password);
+    void addAccount(String username, double initialBalance, double initialHourlyWage);
+    Account getAccountByUsername(String username);
+    double getAccountBalance(String username);
+    void logTransaction(String username, double amount, String description);
+
 } 

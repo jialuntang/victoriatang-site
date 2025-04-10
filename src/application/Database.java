@@ -42,6 +42,7 @@ public class Database {
         }
     }
 
+    @Override
     public static void addUser(String username, String password) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE_PATH, true))) {
             // Format: username,password
@@ -52,6 +53,7 @@ public class Database {
         }
     }
 
+    @Override
     public static boolean userExists(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
@@ -67,6 +69,7 @@ public class Database {
         return false;
     }
 
+    @Override
     public static boolean validateUser(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
@@ -82,6 +85,7 @@ public class Database {
         return false;
     }
 
+    @Override
     public static void addAccount(String username, double initialBalance, double initialHourlyWage) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH, true))) {
             // Format: username,balance,hourlyWage
@@ -92,6 +96,7 @@ public class Database {
         }
     }
 
+    @Override
     public static Account getAccountByUsername(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
@@ -114,6 +119,7 @@ public class Database {
         return null;
     }
 
+    @Override
     public static double getAccountBalance(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
             String line;
@@ -129,6 +135,7 @@ public class Database {
         return 0.0;
     }
 
+    @Override
     public static void updateAccountBalance(String username, double newBalance) {
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
@@ -154,6 +161,7 @@ public class Database {
         }
     }
 
+    @Override
     public static void logTransaction(String username, double amount, String description) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTION_FILE_PATH, true))) {
             // Format: username,amount,description,timestamp
@@ -167,6 +175,7 @@ public class Database {
         }
     }
 
+    @Override
     public static double getHourlyWage(String userId) {
         double hourlyWage = 0.0;
         File file = new File("user_data.txt");
@@ -190,64 +199,8 @@ public class Database {
         return hourlyWage;
     }
 
-    public static double getHourlyWage(int accountId) {
-        double hourlyWage = 0.0;
-        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length < 3) {
-                    continue;
-                }
-                try {
-                    int storedAccountId = Integer.parseInt(data[0].trim());
-                    double storedHourlyWage = Double.parseDouble(data[2].trim());
-                    if (storedAccountId == accountId) {
-                        hourlyWage = storedHourlyWage;
-                        break;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Error parsing data for line: " + line);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error fetching hourly wage: " + e.getMessage());
-        }
-        return hourlyWage;
-    }
 
-    public static void updateHourlyWage(int accountId, double newHourlyWage) {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length >= 3) {
-                    try {
-                        int storedAccountId = Integer.parseInt(data[0].trim());
-                        if (storedAccountId == accountId) {
-                            line = String.format("%s,%s,%.2f", data[0], data[1], newHourlyWage);
-                        }
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-                }
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading account data: " + e.getMessage());
-            return;
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT_FILE_PATH))) {
-            for (String line : lines) {
-                writer.write(line + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println("Error updating hourly wage: " + e.getMessage());
-        }
-    }
-
+    @Override
     public static void showUsers() {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
             String line;
@@ -280,6 +233,7 @@ public class Database {
         return transactions;
     }
 
+    @Override
     public static double getTotalIncoming(int accountId) {
         double total = 0.0;
         try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTION_FILE_PATH))) {
@@ -299,6 +253,7 @@ public class Database {
         return total;
     }
 
+    @Override
     public static double getTotalOutgoing(int accountId) {
         double total = 0.0;
         try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTION_FILE_PATH))) {
