@@ -36,7 +36,7 @@ public class DepWidthController {
     public void initialize() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            double balance = Database.getAccountBalance(currentAccount.getIDnum());
+            double balance = Database.getAccountBalance(currentAccount.getUsername());
             currentAccount.setBalance(balance); // Sync balance with CurrentSession
             balanceLabel.textProperty().bind(currentAccount.balanceProperty().asString("Balance: $%.2f"));
         } else {
@@ -61,8 +61,8 @@ public class DepWidthController {
             if (currentAccount != null) {
                 double newBalance = currentAccount.getBalance() + depAmount;
                 currentAccount.setBalance(newBalance);
-                Database.updateAccountBalance(currentAccount.getIDnum(), newBalance);
-                Database.logTransaction(currentAccount.getIDnum(), depAmount, "Deposit", "Deposited money");
+                Database.updateAccountBalance(currentAccount.getUsername(), newBalance);
+                Database.logTransaction(currentAccount.getUsername(), depAmount, "Deposit");
                 updateHomePieChart();
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to deposit money.");
@@ -94,8 +94,8 @@ public class DepWidthController {
 
                 double newBalance = currentAccount.getBalance() - witAmount;
                 currentAccount.setBalance(newBalance);
-                Database.updateAccountBalance(currentAccount.getIDnum(), newBalance);
-                Database.logTransaction(currentAccount.getIDnum(), -witAmount, "Withdraw", "Withdrew money");
+                Database.updateAccountBalance(currentAccount.getUsername(), newBalance);
+                Database.logTransaction(currentAccount.getUsername(), -witAmount, "Withdraw");
                 updateHomePieChart();
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to withdraw money.");
@@ -123,7 +123,17 @@ public class DepWidthController {
      */
     @FXML
     private void handleTransactionsButtonAction() {
-        navigateTo("/application/transactions.fxml", transactionsButton);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/transactions.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage primaryStage = (Stage) transactionsButton.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Error", "Failed to navigate to transactions screen.");
+        }
     }
 
     /**
@@ -131,15 +141,17 @@ public class DepWidthController {
      */
     @FXML
     private void handleDashboardButtonAction() {
-        navigateTo("/application/home.fxml", dashboardButton);
-    }
-
-    /**
-     * Handles navigation to the send/receive screen.
-     */
-    @FXML
-    private void handleSendReceiveButtonAction() {
-        navigateTo("/application/sendreceive.fxml", sendreceiveButton);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/home.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage primaryStage = (Stage) dashboardButton.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Error", "Failed to navigate to dashboard screen.");
+        }
     }
 
     /**
@@ -149,7 +161,17 @@ public class DepWidthController {
     @FXML
     private void handleLogOutButtonAction() {
         CurrentSession.getInstance().setCurrentAccount(null);
-        navigateTo("/application/start.fxml", logOutButton);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/start.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage primaryStage = (Stage) logOutButton.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Error", "Failed to log out.");
+        }
     }
 
     /**
@@ -161,21 +183,6 @@ public class DepWidthController {
             loader.load();
             HomeController homeController = loader.getController();
             homeController.updatePieChart();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Navigates to the specified FXML file.
-     */
-    private void navigateTo(String fxmlFile, Button button) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
-            Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) button.getScene().getWindow();
-            primaryStage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
         }

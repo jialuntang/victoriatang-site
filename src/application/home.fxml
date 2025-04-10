@@ -37,18 +37,15 @@
     <Line endX="780" endY="535" startX="10" startY="535" stroke="#FFB499" strokeWidth="1.5" />
     
     <!-- Bottom Navigation Buttons -->
-    <Button fx:id="dashboardButton" layoutX="10" layoutY="550" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="     Dashboard     " />
-    <Line endX="162" endY="592" startX="162" startY="545" stroke="#FFB499" strokeWidth="1.5" />
+    <Button fx:id="dashboardButton" layoutX="20" layoutY="550" prefWidth="160" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Dashboard" />
+    <Line endX="200" endY="592" startX="200" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="DWbutton" layoutX="180" layoutY="550" onAction="#handleDWButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text=" Deposit/Withdrawal " />
-    <Line endX="356" endY="592" startX="356" startY="545" stroke="#FFB499" strokeWidth="1.5" />
+    <Button fx:id="DWbutton" layoutX="220" layoutY="550" prefWidth="160" onAction="#handleDWButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Deposit/Withdraw" />
+    <Line endX="400" endY="592" startX="400" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="sendreceiveButton" layoutX="369" layoutY="550" onAction="#handleSendReceiveButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Send/Receive    " />
-    <Line endX="528" endY="592" startX="528" startY="545" stroke="#FFB499" strokeWidth="1.5" />
+    <Button fx:id="transactionsButton" layoutX="420" layoutY="550" prefWidth="160" onAction="#handleTransactionButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Transactions" />
+    <Line endX="600" endY="592" startX="600" startY="545" stroke="#FFB499" strokeWidth="1.5" />
     
-    <Button fx:id="transactionsButton" layoutX="540" layoutY="550" onAction="#handleTransactionButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="    Transactions    " />
-    <Line endX="695" endY="592" startX="695" startY="545" stroke="#FFB499" strokeWidth="1.5" />    
-
-    <Button fx:id="backButton" layoutX="701.0" layoutY="550.0" onAction="#handleLogOutButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Log Out" />
+    <Button fx:id="backButton" layoutX="620" layoutY="550" prefWidth="160" onAction="#handleLogOutButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Log Out" />
 
 </AnchorPane>

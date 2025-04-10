@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import application.Account;
 import application.Database;
+import application.model.User;
 
 public class CreateAccountController {
 
@@ -36,9 +37,9 @@ public class CreateAccountController {
 
     @FXML
     private void handleCreateButtonAction() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+        String confirmPassword = confirmPasswordField.getText().trim();
 
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             showAlert(AlertType.ERROR, "Registration Failed", "All fields must be filled out.");
@@ -52,7 +53,7 @@ public class CreateAccountController {
 
         try {
             // Check if the username already exists
-            if (Database.getAccountByUsername(username) != null) {
+            if (Database.userExists(username)) {
                 showAlert(AlertType.ERROR, "Registration Failed", "Username already exists.");
                 return;
             }
@@ -60,19 +61,17 @@ public class CreateAccountController {
             // Add new user to the database
             Database.addUser(username, password);
 
-            // Retrieve the new account from the database
-            Account newAccount = Database.getAccountByUsername(username);
+            // Create account with initial balance and hourly wage
+            double initialBalance = 0.0;
+            double hourlyWage = 0.0;
+            Database.addAccount(username, initialBalance, hourlyWage);
 
-            if (newAccount != null) {
-                // Add account with initial balance and hourly wage
-                double initialBalance = 0.0;
-                double hourlyWage = 0.0;
-                Database.addAccount(newAccount.getIDnum(), initialBalance, hourlyWage);
-                CurrentSession.getInstance().setCurrentAccount(newAccount);
-                showHomeScreen();  // Navigate to the home screen
-            } else {
-                showAlert(AlertType.ERROR, "Registration Failed", "Failed to create account.");
-            }
+            // Create Account object and set it in CurrentSession
+            Account newAccount = new Account(username, 0, initialBalance, hourlyWage);
+            CurrentSession.getInstance().setCurrentAccount(newAccount);
+
+            showAlert(AlertType.INFORMATION, "Registration Successful", "Account created successfully!");
+            showHomeScreen();
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Error", "An unexpected error occurred: " + e.getMessage());
@@ -108,15 +107,26 @@ public class CreateAccountController {
 
     private void showHomeScreen() {
         try {
-            // Load the FXML file for the home screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/home.fxml"));
             Parent root = loader.load();
+            
+            // Get the controller and set the user
+            HomeController controller = loader.getController();
+            Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+            if (currentAccount != null) {
+                User user = new User(currentAccount.getUsername(), "");
+                controller.setUser(user);
+            }
+            
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            
             Stage primaryStage = (Stage) createButton.getScene().getWindow();
             primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert(AlertType.ERROR, "Error", "Failed to navigate to home screen: " + e.getMessage());
         }
     }
 }

@@ -1,7 +1,7 @@
 package application.services;
 
 import application.data.DataManager;
-import application.models.*;
+import application.model.*;
 import java.util.List;
 import java.util.ArrayList;
 

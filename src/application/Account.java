@@ -1,24 +1,26 @@
 package application;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import application.model.Transaction;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import application.CreateAccountController;
-import application.Database;
 
 public class Account {
-
     private String username;
     private int IDnum; 
     private DoubleProperty balance;
     private DoubleProperty hourlyWage;
-    private List<Transaction> transactionHistory = new ArrayList<>();
+    private List<Transaction> transactionHistory;
 
     public Account(String username, int IDnum, double initialBalance, double initialHourlyWage) {
         this.username = username;
         this.IDnum = IDnum;
         this.balance = new SimpleDoubleProperty(initialBalance);
         this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
+        this.transactionHistory = new ArrayList<>();
+        loadTransactionHistory();
     }
 
     public double getBalance() {
@@ -27,7 +29,11 @@ public class Account {
 
     public void setBalance(double newBalance) {
         this.balance.set(newBalance);
-        Database.updateAccountBalance(IDnum, newBalance);  // Update the database as well
+        try {
+            Database.updateAccountBalance(username, newBalance);
+        } catch (Exception e) {
+            System.out.println("Error updating balance in database: " + e.getMessage());
+        }
     }
 
     public double getHourlyWage() {
@@ -36,7 +42,11 @@ public class Account {
 
     public void setHourlyWage(double newHourlyWage) {
         this.hourlyWage.set(newHourlyWage);
-        Database.updateHourlyWage(IDnum, newHourlyWage);  // Update the hourly wage in the database
+        try {
+            Database.updateHourlyWage(IDnum, newHourlyWage);
+        } catch (Exception e) {
+            System.out.println("Error updating hourly wage in database: " + e.getMessage());
+        }
     }
 
     public String getUsername() {
@@ -55,33 +65,65 @@ public class Account {
         return hourlyWage;
     }
 
-    // Transaction Methods
+    public void addTransaction(double amount, String description) {
+        try {
+            // Create and add transaction to memory
+            Transaction transaction = new Transaction(username, amount, description);
+            transactionHistory.add(transaction);
+            
+            // Log transaction in database
+            Database.logTransaction(username, amount, description);
+            
+            // Update balance
+            updateBalance(amount);
+        } catch (Exception e) {
+            System.out.println("Error adding transaction: " + e.getMessage());
+        }
+    }
 
-    public void addTransaction(String type, double amount, String recipient, String description) {
-        Transaction transaction = new Transaction(this.username, recipient, amount, description);
-        transactionHistory.add(transaction);
-        Database.logTransaction(IDnum, amount, type, description);  // Log this transaction to the database
+    private void updateBalance(double amount) {
+        try {
+            double newBalance = getBalance() + amount;
+            setBalance(newBalance);
+        } catch (Exception e) {
+            System.out.println("Error updating balance: " + e.getMessage());
+        }
     }
 
     public List<Transaction> getTransactionHistory() {
-        if (transactionHistory.isEmpty()) {
-            transactionHistory = Database.getRecentTransactions(IDnum, 50);  // Load recent transactions from the database
+        loadTransactionHistory();
+        return new ArrayList<>(transactionHistory); // Return a copy to prevent external modification
+    }
+
+    private void loadTransactionHistory() {
+        try {
+            List<Transaction> recentTransactions = Database.getRecentTransactions(IDnum, 10);
+            if (recentTransactions != null) {
+                transactionHistory = recentTransactions;
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading transaction history: " + e.getMessage());
+            if (transactionHistory == null) {
+                transactionHistory = new ArrayList<>();
+            }
         }
-        return transactionHistory;
     }
-
-    public void setTransactionHistory(List<Transaction> transactions) {
-        this.transactionHistory.clear();
-        this.transactionHistory.addAll(transactions);
-    }
-
-    // Financial Summary Methods
 
     public double getTotalIncoming() {
-        return Database.getTotalIncoming(IDnum);  // Fetch total incoming transactions from the database
+        try {
+            return Database.getTotalIncoming(IDnum);
+        } catch (Exception e) {
+            System.out.println("Error getting total incoming: " + e.getMessage());
+            return 0.0;
+        }
     }
 
     public double getTotalOutgoing() {
-        return Database.getTotalOutgoing(IDnum);  // Fetch total outgoing transactions from the database
+        try {
+            return Database.getTotalOutgoing(IDnum);
+        } catch (Exception e) {
+            System.out.println("Error getting total outgoing: " + e.getMessage());
+            return 0.0;
+        }
     }
 }

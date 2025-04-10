@@ -15,25 +15,39 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
+import application.Account;
+import application.CurrentSession;
+import application.model.Transaction;
+import application.model.User;
+
 /**
  * Controller for the Transactions screen, displaying a user's transaction history.
  */
 public class TransactionsController {
 
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // UI Elements
-    @FXML private Button logOutButton;
+    @FXML private Button backButton;
     @FXML private Button dashboardButton;
     @FXML private Button DWbutton;
-    @FXML private Button sendreceiveButton;
     @FXML private VBox transactionsBox; // Container for displaying transactions
     @FXML private ScrollPane transactionScrollPane; // Scroll pane for transactions
+    @FXML private Label transactionsLabel;
 
     /**
      * Initializes the Transactions screen by loading transaction history.
      */
     @FXML
     public void initialize() {
-        loadTransactions();
+        Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+        if (currentAccount != null) {
+            loadTransactions();
+        }
     }
 
     /**
@@ -42,14 +56,6 @@ public class TransactionsController {
     @FXML
     private void handleDashboardButtonAction() {
         navigateTo("/application/home.fxml");
-    }
-
-    /**
-     * Handles navigation to the Send/Receive screen.
-     */
-    @FXML
-    private void handleSendReceiveButtonAction() {
-        navigateTo("/application/sendreceive.fxml");
     }
 
     /**
@@ -74,51 +80,24 @@ public class TransactionsController {
      */
     private void loadTransactions() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
-        transactionsBox.getChildren().clear(); // Clear previous entries
-
-        if (currentAccount == null) {
-            Label noAccountLabel = new Label("No account logged in. Log in to view transactions.");
-            noAccountLabel.getStyleClass().add("transaction-label");
-            transactionsBox.getChildren().add(noAccountLabel);
-            return;
-        }
-
-        // Fetch transactions from the database (up to 100 recent transactions)
-        List<Transaction> transactions = Database.getRecentTransactions(currentAccount.getIDnum(), 100);
-
-        if (transactions.isEmpty()) {
-            Label noTransactionsLabel = new Label("No transactions found.");
-            noTransactionsLabel.getStyleClass().add("transaction-label");
-            transactionsBox.getChildren().add(noTransactionsLabel);
-            return;
-        }
-
-        // Populate the transactions box with transaction details
-        for (Transaction transaction : transactions) {
-            VBox transactionBox = new VBox(5);
-            transactionBox.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 10; "
-                    + "-fx-border-color: #FFA41B; -fx-border-width: 1; "
-                    + "-fx-border-radius: 5; -fx-background-radius: 5;");
-            transactionBox.setPrefWidth(transactionScrollPane.getPrefWidth() - 20);
-
-            Label senderLabel = new Label("Sender: " + transaction.getSender());
-            Label recipientLabel = new Label("Recipient: " + transaction.getRecipient());
-            Label amountLabel = new Label("Amount: $" + String.format("%.2f", transaction.getAmount()));
-            Label descriptionLabel = new Label("Description: " + transaction.getDescription());
-
-            // Apply consistent label styling
-            String labelStyle = "-fx-text-fill: #333333; -fx-font-size: 12px;";
-            senderLabel.setStyle(labelStyle);
-            recipientLabel.setStyle(labelStyle);
-            amountLabel.setStyle(labelStyle);
-            descriptionLabel.setStyle(labelStyle);
-            descriptionLabel.setWrapText(true); // Enable text wrapping for long descriptions
-
-            // Add labels to the transaction container
-            transactionBox.getChildren().addAll(senderLabel, recipientLabel, amountLabel, descriptionLabel);
-
-            // Add each transaction to the transactionsBox
-            transactionsBox.getChildren().add(transactionBox);
+        if (currentAccount != null) {
+            List<Transaction> transactions = currentAccount.getTransactionHistory();
+            transactionsBox.getChildren().clear();
+            
+            if (transactions.isEmpty()) {
+                Label noTransactionsLabel = new Label("No transactions found");
+                noTransactionsLabel.setStyle("-fx-text-fill: #666666;");
+                transactionsBox.getChildren().add(noTransactionsLabel);
+            } else {
+                for (Transaction transaction : transactions) {
+                    Label transactionLabel = new Label(String.format("%s: $%.2f - %s", 
+                        transaction.getDescription(), 
+                        transaction.getAmount(),
+                        transaction.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"))));
+                    transactionLabel.setStyle("-fx-text-fill: #333333;");
+                    transactionsBox.getChildren().add(transactionLabel);
+                }
+            }
         }
     }
 
@@ -132,20 +111,16 @@ public class TransactionsController {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) logOutButton.getScene().getWindow();
+            Stage primaryStage = (Stage) transactionsBox.getScene().getWindow();
             primaryStage.setScene(scene);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Error", "Unable to load the requested page.");
+            showAlert(AlertType.ERROR, "Navigation Error", "Failed to navigate to the requested screen.");
         }
     }
 
     /**
      * Displays an alert dialog.
-     *
-     * @param alertType The type of alert to display.
-     * @param title     The title of the alert.
-     * @param message   The message to display in the alert.
      */
     private void showAlert(AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
@@ -153,6 +128,11 @@ public class TransactionsController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleBackButtonAction() {
+        navigateTo("/application/home.fxml");
     }
 }
 

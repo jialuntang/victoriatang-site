@@ -20,6 +20,14 @@ import java.util.List;
 import javafx.scene.chart.PieChart;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import java.io.IOException;
+
+import application.Account;
+import application.CurrentSession;
+import application.Database;
+import application.model.Transaction;
+import application.model.User;
 
 /**
  * Controller class for the Home screen in the JavaFX application.
@@ -27,8 +35,14 @@ import javafx.collections.ObservableList;
  */
 public class HomeController {
 
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // UI Elements
-    @FXML private Button backButton, DWbutton, transactionsButton, sendreceiveButton;
+    @FXML private Button backButton, DWbutton, transactionsButton;
     @FXML private Label balanceLabel, dashboardLabel, welcomeLabel, dateTimeLabel, recentTransactionsLabel;
     @FXML private Circle placeholderCircle;
     @FXML private PieChart pieChart;
@@ -38,20 +52,29 @@ public class HomeController {
      * Initializes the Home screen.
      * Binds the account balance, updates UI elements, and starts the date-time updater.
      */
+    @FXML
     public void initialize() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
 
         if (currentAccount != null) {
+            // Update balance from database
+            double currentBalance = Database.getAccountBalance(currentAccount.getUsername());
+            currentAccount.setBalance(currentBalance);
+            
+            // Bind balance label to account balance
             balanceLabel.textProperty().bind(currentAccount.balanceProperty().asString("Balance: $%.2f"));
+            
+            // Update UI elements
             updatePieChart();
             loadRecentTransactions();
+            handleWelcomeLabel();
         } else {
             balanceLabel.setText("Balance: - - -");
             pieChart.setTitle("No Account Logged In");
             placeholderCircle.setVisible(true);
+            welcomeLabel.setText("Hi, Guest");
         }
 
-        handleWelcomeLabel();
         startDateTimeUpdater();
     }
 
@@ -70,121 +93,100 @@ public class HomeController {
     @FXML
     public void updatePieChart() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
-
         if (currentAccount != null) {
-            try {
-                double totalIncoming = Database.getTotalIncoming(currentAccount.getIDnum());
-                double totalOutgoing = Database.getTotalOutgoing(currentAccount.getIDnum());
-
-                ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                    new PieChart.Data("Incoming", totalIncoming),
-                    new PieChart.Data("Outgoing", totalOutgoing)
-                );
-                pieChart.setData(pieChartData);
-                pieChart.setTitle("Money Flow");
-                placeholderCircle.setVisible(false);
-
-                Platform.runLater(() -> {
-                    for (PieChart.Data data : pieChartData) {
-                        Node slice = data.getNode();
-                        if (slice != null) {
-                            slice.setStyle("-fx-pie-color: " + (data.getName().equals("Incoming") ? "green;" : "red;"));
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            pieChart.setData(FXCollections.observableArrayList());
-            pieChart.setTitle("No Account Logged In");
-            placeholderCircle.setVisible(true);
+            double incoming = Database.getTotalIncoming(currentAccount.getIDnum());
+            double outgoing = Database.getTotalOutgoing(currentAccount.getIDnum());
+            
+            pieChart.getData().clear();
+            pieChart.getData().add(new PieChart.Data("Incoming", incoming));
+            pieChart.getData().add(new PieChart.Data("Outgoing", outgoing));
+            pieChart.setTitle("Transaction Overview");
+            placeholderCircle.setVisible(false);
         }
     }
 
     /**
-     * Starts a timeline to update the date-time label every second.
+     * Loads recent transactions into the transactions box.
+     */
+    private void loadRecentTransactions() {
+        Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+        if (currentAccount != null) {
+            List<Transaction> transactions = Database.getRecentTransactions(currentAccount.getIDnum(), 5);
+            recentTransactionsBox.getChildren().clear();
+            
+            for (Transaction transaction : transactions) {
+                Label transactionLabel = new Label(String.format("%s: $%.2f - %s", 
+                    transaction.getDescription(), 
+                    transaction.getAmount(),
+                    transaction.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"))));
+                recentTransactionsBox.getChildren().add(transactionLabel);
+            }
+        }
+    }
+
+    /**
+     * Starts the date-time updater.
      */
     private void startDateTimeUpdater() {
-        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("EEEE, MMMM dd");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event ->
-            dateTimeLabel.setText(LocalDateTime.now().format(dateTimeFormat))
-        ));
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+            new javafx.animation.KeyFrame(javafx.util.Duration.seconds(1), e -> {
+                dateTimeLabel.setText(java.time.LocalDateTime.now().format(
+                    java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")));
+            })
+        );
+        timeline.setCycleCount(javafx.animation.Animation.INDEFINITE);
         timeline.play();
-    }
-
-    /**
-     * Loads and displays the most recent transactions.
-     */
-    public void loadRecentTransactions() {
-        Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
-
-        if (currentAccount != null) {
-            try {
-                // Fetch recent transactions from the database
-                List<Transaction> transactions = Database.getRecentTransactions(currentAccount.getIDnum(), 3);
-
-                // Clear previous entries
-                recentTransactionsBox.getChildren().clear();
-
-                // Display the most recent transactions
-                for (Transaction transaction : transactions) {
-                    // Create a styled VBox for each transaction
-                    VBox transactionBox = new VBox();
-                    transactionBox.setSpacing(1);
-                    transactionBox.setStyle("-fx-background-color: #3E3E3E; -fx-padding: 1; -fx-border-color: #666666; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;");
-                    transactionBox.setPrefWidth(280);
-                    transactionBox.setMaxHeight(80);
-
-                    // Add details to the transaction box
-                    Label senderLabel = new Label("Sender: " + transaction.getSender());
-                    Label amountLabel = new Label("Amount: $" + String.format("%.2f", transaction.getAmount()));
-                    Label descriptionLabel = new Label("Description: " + transaction.getDescription());
-
-                    // Style each label
-                    String labelStyle = "-fx-text-fill: #FFFFFF; -fx-font-size: 12px;";
-                    senderLabel.setStyle(labelStyle);
-                    amountLabel.setStyle(labelStyle);
-                    descriptionLabel.setStyle(labelStyle);
-                    descriptionLabel.setWrapText(true);
-
-                    // Add labels to the transaction box
-                    transactionBox.getChildren().addAll(senderLabel, amountLabel, descriptionLabel);
-
-                    // Add the transaction box to the recentTransactionsBox
-                    recentTransactionsBox.getChildren().add(transactionBox);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                recentTransactionsBox.getChildren().clear();
-                Label errorLabel = new Label("Error loading transactions.");
-                errorLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 14px;");
-                recentTransactionsBox.getChildren().add(errorLabel);
-            }
-        } else {
-            // If no account is logged in, display a message
-            recentTransactionsBox.getChildren().clear();
-            Label noTransactionsLabel = new Label("No recent transactions available.");
-            noTransactionsLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 14px;");
-            recentTransactionsBox.getChildren().add(noTransactionsLabel);
-        }
     }
 
     /**
      * Handles navigation between different application views.
      */
-    @FXML private void handleDWButtonAction() { switchScene("depwidth.fxml", DWbutton); }
-    @FXML private void handleSendReceiveButtonAction() { switchScene("sendreceive.fxml", sendreceiveButton); }
-    @FXML private void handleTransactionButtonAction() { switchScene("transactions.fxml", transactionsButton); }
+    @FXML private void handleDWButtonAction() { 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/depwidth.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage primaryStage = (Stage) DWbutton.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to navigate to deposit/withdraw screen.");
+        }
+    }
+    @FXML private void handleTransactionButtonAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/transactions.fxml"));
+            Parent root = loader.load();
+            TransactionsController controller = loader.getController();
+            controller.setUser(user);
+            Stage stage = (Stage) transactionsButton.getScene().getWindow();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to navigate to transactions screen.");
+        }
+    }
 
     /**
      * Logs out the current user and returns to the start screen.
      */
     @FXML
     private void handleLogOutButtonAction() {
-        CurrentSession.getInstance().setCurrentAccount(null);
-        switchScene("start.fxml", backButton);
+        try {
+            CurrentSession.getInstance().logout();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/start.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage primaryStage = (Stage) backButton.getScene().getWindow();
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to log out.");
+        }
     }
 
     /**
@@ -200,5 +202,13 @@ public class HomeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
