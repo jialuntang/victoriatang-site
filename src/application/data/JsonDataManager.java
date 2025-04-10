@@ -28,6 +28,7 @@ public class JsonDataManager implements DataManager {
 
     public JsonDataManager() {
         initializeDatabase();
+        loadAccountsFromFile();
     }
 
     private void initializeDatabase() {
@@ -44,6 +45,33 @@ public class JsonDataManager implements DataManager {
         }
     }
 
+    private void loadAccountsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ACCOUNT_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 4) {
+                    int id = Integer.parseInt(data[0]);
+                    String username = data[1];
+                    String passwordHash = data[2];
+                    double balance = Double.parseDouble(data[3]);
+                    
+                    Account account = new Account(id, username, passwordHash);
+                    account.setDataManager(this);
+                    account.setBalance(balance);
+                    accounts.put(id, account);
+                    
+                    // Update id counter to be greater than the highest id
+                    if (id >= idCounter.get()) {
+                        idCounter.set(id + 1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading accounts: " + e.getMessage());
+        }
+    }
+
     @Override
     public boolean authenticateUser(String username, String password) {
         return accounts.values().stream()
@@ -55,16 +83,24 @@ public class JsonDataManager implements DataManager {
     public Account createAccount(String username, String password) {
         int id = idCounter.getAndIncrement();
         Account account = new Account(id, username, hashPassword(password));
+        account.setDataManager(this);
         accounts.put(id, account);
         return account;
     }
 
     @Override
     public Account getAccountByUsername(String username) {
-        return accounts.values().stream()
-            .filter(account -> account.getUsername().equals(username))
+        Account account = accounts.values().stream()
+            .filter(acc -> acc.getUsername().equals(username))
             .findFirst()
             .orElse(null);
+            
+        if (account != null) {
+            // Calculate current balance from transactions
+            double balance = calculateAccountBalance(account);
+            account.setBalance(balance);
+        }
+        return account;
     }
 
     public Account getAccountById(int accountId) {
@@ -146,7 +182,10 @@ public class JsonDataManager implements DataManager {
     @Override
     public double getAccountBalance(String username) {
         Account account = getAccountByUsername(username);
-        return account != null ? account.getBalance() : 0.0;
+        if (account != null) {
+            return calculateAccountBalance(account);
+        }
+        return 0.0;
     }
 
     @Override
@@ -242,5 +281,22 @@ public class JsonDataManager implements DataManager {
             System.out.println("Error fetching transactions: " + e.getMessage());
         }
         return recentTransactions;
+    }
+
+    private double calculateAccountBalance(Account account) {
+        double balance = 0.0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTION_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 5 && data[0].equals(account.getUsername())) {
+                    double amount = Double.parseDouble(data[1]);
+                    balance += amount;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error calculating balance: " + e.getMessage());
+        }
+        return balance;
     }
 }

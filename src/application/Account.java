@@ -16,7 +16,7 @@ public class Account {
     private DoubleProperty balance;
     private DoubleProperty hourlyWage;
     private List<Transaction> transactionHistory;
-    private JsonDataManager dataManager = Main.getDataManager();
+    private JsonDataManager dataManager;
     private boolean isUpdatingBalance = false;
 
     public Account(int id, String username, String passwordHash) {
@@ -27,9 +27,12 @@ public class Account {
         this.balance = new SimpleDoubleProperty(0.0);
         this.hourlyWage = new SimpleDoubleProperty(0.0);
         this.transactionHistory = new ArrayList<>();
-        loadTransactionHistory();
     }
 
+    public void setDataManager(JsonDataManager dataManager) {
+        this.dataManager = dataManager;
+        loadTransactionHistory();
+    }
 
     public int getId() {
         return id;
@@ -44,7 +47,7 @@ public class Account {
     }
 
     public void setBalance(double newBalance) {
-        if (!isUpdatingBalance) {
+        if (!isUpdatingBalance && dataManager != null) {
             try {
                 isUpdatingBalance = true;
                 this.balance.set(newBalance);
@@ -56,7 +59,6 @@ public class Account {
             this.balance.set(newBalance);
         }
     }
-
 
     public String getUsername() {
         return username;
