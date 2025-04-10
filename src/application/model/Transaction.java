@@ -61,7 +61,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return String.format("%s: $%.2f - %s (%s)", 
+        return String.format("%s: $%.2f - %s", 
             description, amount, getFormattedTimestamp());
     }
 } 

@@ -2,22 +2,20 @@ package application;
 
 // Import necessary JavaFX classes
 // Used to link FXML elements with the controller
+import application.services.FinanceService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-// Class for button controls
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Alert.AlertType;
-// Method to handle navigation
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import application.services.FinanceService;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 // Controller class for handling events from the start.fxml file
 public class StartController {
@@ -142,6 +140,7 @@ public class StartController {
 
         if (financeService.login(username, password)) {
             // Navigate to home screen
+            CurrentSession.getInstance().setCurrentAccount(financeService.getCurrentAccount());
             Main.showHomeScreen();
         } else {
             errorLabel.setText("Invalid username or password");
