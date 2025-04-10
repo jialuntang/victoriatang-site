@@ -27,7 +27,7 @@ public interface DataManager {
     boolean validateAccount(String username, String password);
     Account getAccountByUsername(String username);
     double getAccountBalance(String username);
-    void logTransaction(String username, double amount, String description);
+    void logTransaction(String username, double amount, String type, String description);
     
 
 } 

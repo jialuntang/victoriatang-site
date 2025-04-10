@@ -1,33 +1,22 @@
 package application;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.util.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import javafx.scene.chart.PieChart;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import java.io.IOException;
-import javafx.scene.control.ListView;
+import java.util.List;
 
-import application.Account;
-import application.CurrentSession;
 import application.data.JsonDataManager;
 import application.model.Transaction;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 /**
  * Controller class for the Home screen in the JavaFX application.
@@ -58,6 +47,9 @@ public class HomeController {
     public void initialize() {
         updateAccountInfo();
         startDateTimeUpdater();
+        
+        // Force update of pie chart
+        updatePieChart();
     }
 
     private void updateAccountInfo() {
@@ -107,12 +99,24 @@ public class HomeController {
             PieChart.Data outgoingData = new PieChart.Data("Outgoing", outgoing);
             pieChart.getData().addAll(incomingData, outgoingData);
             
-            // Style the pie chart labels
+            // Style the pie chart
             pieChart.setTitle("Transaction Overview");
             pieChart.setStyle("-fx-pie-label-fill: #666666;");
             
+            // Set colors for the pie slices
+            for (PieChart.Data data : pieChart.getData()) {
+                if (data.getName().equals("Incoming")) {
+                    data.getNode().setStyle("-fx-pie-color: #82B1FF;");
+                } else {
+                    data.getNode().setStyle("-fx-pie-color: #FF9E80;");
+                }
+            }
+            
             // Make the placeholder circle invisible
             placeholderCircle.setVisible(false);
+        } else {
+            pieChart.setTitle("No Account Logged In");
+            placeholderCircle.setVisible(true);
         }
     }
 

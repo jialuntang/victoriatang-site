@@ -1,16 +1,19 @@
 package application;
 
+import java.io.IOException;
+
+import application.data.JsonDataManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import application.data.JsonDataManager;
 
 /**
  * Controller for handling deposit and withdrawal operations in the application.
@@ -24,10 +27,12 @@ public class DepWidthController {
     @FXML private Button transactionsButton;
     
     @FXML private TextField wageField;
+    @FXML private TextField descriptionField;
     @FXML private Button depositButton;
     @FXML private Button withdrawButton;
     
     @FXML private Label depWitLabel,balanceLabel,welcomeLabel;
+    @FXML private PieChart pieChart;
 
     private JsonDataManager dataManager = Main.getDataManager();
     
@@ -54,8 +59,15 @@ public class DepWidthController {
     private void handleDepositButtonAction() {
         try {
             double depAmount = Double.parseDouble(wageField.getText());
+            String description = descriptionField.getText();
+            
             if (depAmount <= 0) {
                 showAlert(AlertType.ERROR, "Deposit Denied", "Enter a value greater than 0.");
+                return;
+            }
+            
+            if (description.isEmpty()) {
+                showAlert(AlertType.ERROR, "Description Required", "Please enter a description for this deposit.");
                 return;
             }
 
@@ -64,8 +76,16 @@ public class DepWidthController {
                 double newBalance = currentAccount.getBalance() + depAmount;
                 currentAccount.setBalance(newBalance);
                 dataManager.updateAccountBalance(currentAccount, newBalance);
-                dataManager.logTransaction(currentAccount.getUsername(), depAmount, "Deposit");
-                updateHomePieChart();
+                dataManager.logTransaction(currentAccount.getUsername(), depAmount, "Deposit", description);
+                
+                // Clear the input fields after successful deposit
+                wageField.clear();
+                descriptionField.clear();
+                
+                showAlert(AlertType.INFORMATION, "Success", "Deposit successful!");
+                
+                // Navigate back to home screen
+                handleDashboardButtonAction();
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to deposit money.");
             }
@@ -82,8 +102,15 @@ public class DepWidthController {
     private void handleWithdrawButtonAction() {
         try {
             double witAmount = Double.parseDouble(wageField.getText());
+            String description = descriptionField.getText();
+            
             if (witAmount <= 0) {
                 showAlert(AlertType.ERROR, "Withdraw Denied", "Enter a value greater than 0.");
+                return;
+            }
+            
+            if (description.isEmpty()) {
+                showAlert(AlertType.ERROR, "Description Required", "Please enter a description for this withdrawal.");
                 return;
             }
 
@@ -97,8 +124,14 @@ public class DepWidthController {
                 double newBalance = currentAccount.getBalance() - witAmount;
                 currentAccount.setBalance(newBalance);
                 dataManager.updateAccountBalance(currentAccount, newBalance);
-                dataManager.logTransaction(currentAccount.getUsername(), -witAmount, "Withdraw");
+                dataManager.logTransaction(currentAccount.getUsername(), -witAmount, "Withdraw", description);
                 updateHomePieChart();
+                
+                // Clear the input fields after successful withdrawal
+                wageField.clear();
+                descriptionField.clear();
+                
+                showAlert(AlertType.INFORMATION, "Success", "Withdrawal successful!");
             } else {
                 showAlert(AlertType.ERROR, "Access Denied", "You must be logged in to withdraw money.");
             }
@@ -128,11 +161,19 @@ public class DepWidthController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/transactions.fxml"));
             Parent root = loader.load();
+            TransactionsController controller = loader.getController();
+            
+            // Force reload of transactions
+            Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+            if (currentAccount != null) {
+                currentAccount.loadTransactionHistory();
+            }
+            
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
             Stage primaryStage = (Stage) transactionsButton.getScene().getWindow();
             primaryStage.setScene(scene);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Error", "Failed to navigate to transactions screen.");
         }
@@ -181,10 +222,30 @@ public class DepWidthController {
      */
     private void updateHomePieChart() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/home.fxml"));
-            loader.load();
-            HomeController homeController = loader.getController();
-            homeController.updatePieChart();
+            Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
+            if (currentAccount != null) {
+                double incoming = dataManager.getTotalIncoming(currentAccount);
+                double outgoing = dataManager.getTotalOutgoing(currentAccount);
+                
+                // Update the pie chart data
+                pieChart.getData().clear();
+                PieChart.Data incomingData = new PieChart.Data("Incoming", incoming);
+                PieChart.Data outgoingData = new PieChart.Data("Outgoing", outgoing);
+                pieChart.getData().addAll(incomingData, outgoingData);
+                
+                // Style the pie chart
+                pieChart.setTitle("Transaction Overview");
+                pieChart.setStyle("-fx-pie-label-fill: #666666;");
+                
+                // Set colors for the pie slices
+                for (PieChart.Data data : pieChart.getData()) {
+                    if (data.getName().equals("Incoming")) {
+                        data.getNode().setStyle("-fx-pie-color: #82B1FF;");
+                    } else {
+                        data.getNode().setStyle("-fx-pie-color: #FF9E80;");
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

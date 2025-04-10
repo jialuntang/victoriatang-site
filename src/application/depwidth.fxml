@@ -27,6 +27,7 @@
     <!-- Deposit and Withdrawal Section -->
     <VBox layoutX="300" layoutY="200" spacing="20" alignment="CENTER">
         <TextField fx:id="wageField" promptText="Enter Amount" style="-fx-background-color: white; -fx-prompt-text-fill: #999999; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" prefWidth="200" />
+        <TextField fx:id="descriptionField" promptText="Enter Description" style="-fx-background-color: white; -fx-prompt-text-fill: #999999; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" prefWidth="200" />
         <HBox spacing="15" alignment="CENTER">
             <Button fx:id="depositButton" onAction="#handleDepositButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Deposit" />
             <Button fx:id="withdrawButton" onAction="#handleWithdrawButtonAction" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Withdraw" />

@@ -1,13 +1,18 @@
 package application.data;
 
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import application.Account;
 import application.model.Transaction;
@@ -145,10 +150,10 @@ public class JsonDataManager implements DataManager {
     }
 
     @Override
-    public void logTransaction(String username, double amount, String description) {
+    public void logTransaction(String username, double amount, String type, String description) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTION_FILE_PATH, true))) {
-            String transactionRecord = String.format("%s,%.2f,%s,%s\n", 
-                username, amount, description, 
+            String transactionRecord = String.format("%s,%.2f,%s,%s,%s\n", 
+                username, amount, type, description,
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             writer.write(transactionRecord);
         } catch (IOException e) {
@@ -163,9 +168,10 @@ public class JsonDataManager implements DataManager {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length >= 2 && data[0].equals(account.getUsername())) {
+                if (data.length >= 5 && data[0].equals(account.getUsername())) {
                     double amount = Double.parseDouble(data[1]);
-                    if (amount > 0) {
+                    String type = data[2];
+                    if (type.equals("Deposit")) {
                         total += amount;
                     }
                 }
@@ -183,9 +189,10 @@ public class JsonDataManager implements DataManager {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length >= 2 && data[0].equals(account.getUsername())) {
+                if (data.length >= 5 && data[0].equals(account.getUsername())) {
                     double amount = Double.parseDouble(data[1]);
-                    if (amount < 0) {
+                    String type = data[2];
+                    if (type.equals("Withdraw")) {
                         total += Math.abs(amount);
                     }
                 }
@@ -201,15 +208,34 @@ public class JsonDataManager implements DataManager {
         List<Transaction> recentTransactions = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTION_FILE_PATH))) {
             String line;
-            while ((line = reader.readLine()) != null && recentTransactions.size() < limit) {
-                String[] data = line.split(",");
-                if (data.length >= 4) {
+            List<String> lines = new ArrayList<>();
+            
+            // First, read all lines into memory
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+            
+            // Process lines in reverse order to get most recent transactions
+            for (int i = lines.size() - 1; i >= 0 && recentTransactions.size() < limit; i--) {
+                String[] data = lines.get(i).split(",");
+                if (data.length >= 5) {
                     String username = data[0];
                     double amount = Double.parseDouble(data[1]);
-                    String description = data[2];
-                    LocalDateTime timestamp = LocalDateTime.parse(data[3], 
+                    String type = data[2];
+                    String description = data[3];
+                    LocalDateTime timestamp = LocalDateTime.parse(data[4], 
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                    recentTransactions.add(new Transaction(idCounter.getAndIncrement(), accountId, accountId, amount, description));
+                    
+                    // Only add transactions for the current account
+                    if (username.equals(getAccountById(accountId).getUsername())) {
+                        // Create a detailed description with amount, time, and description
+                        String detailedDescription = String.format("%s: $%.2f | %s | %s", 
+                            type, 
+                            Math.abs(amount),
+                            timestamp.format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")),
+                            description);
+                        recentTransactions.add(new Transaction(idCounter.getAndIncrement(), accountId, accountId, amount, detailedDescription));
+                    }
                 }
             }
         } catch (IOException e) {

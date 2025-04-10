@@ -1,5 +1,10 @@
 package application;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import application.model.Transaction;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,13 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.List;
-
-import application.Account;
-import application.CurrentSession;
-import application.model.Transaction;
 
 /**
  * Controller for the Transactions screen, displaying a user's transaction history.
@@ -32,6 +30,12 @@ public class TransactionsController {
     @FXML private VBox transactionsBox; // Container for displaying transactions
     @FXML private ScrollPane transactionScrollPane; // Scroll pane for transactions
     @FXML private Label transactionsLabel;
+    @FXML private Button sortAllButton;
+    @FXML private Button sortDepositButton;
+    @FXML private Button sortWithdrawButton;
+
+    private List<Transaction> allTransactions;
+    private String currentSort = "all";
 
     /**
      * Initializes the Transactions screen by loading transaction history.
@@ -40,6 +44,8 @@ public class TransactionsController {
     public void initialize() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
+            // Force reload of transactions
+            currentAccount.loadTransactionHistory();
             loadTransactions();
         }
     }
@@ -75,24 +81,55 @@ public class TransactionsController {
     private void loadTransactions() {
         Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
         if (currentAccount != null) {
-            List<Transaction> transactions = currentAccount.getTransactionHistory();
-            transactionsBox.getChildren().clear();
-            
-            if (transactions.isEmpty()) {
-                Label noTransactionsLabel = new Label("No transactions found");
-                noTransactionsLabel.setStyle("-fx-text-fill: #666666;");
-                transactionsBox.getChildren().add(noTransactionsLabel);
-            } else {
-                for (Transaction transaction : transactions) {
-                    Label transactionLabel = new Label(String.format("%s: $%.2f - %s", 
-                        transaction.getDescription(), 
-                        transaction.getAmount(),
-                        transaction.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"))));
-                    transactionLabel.setStyle("-fx-text-fill: #333333;");
-                    transactionsBox.getChildren().add(transactionLabel);
-                }
+            allTransactions = currentAccount.getTransactionHistory();
+            displayTransactions();
+        }
+    }
+
+    /**
+     * Displays transactions based on current sort filter
+     */
+    private void displayTransactions() {
+        transactionsBox.getChildren().clear();
+        
+        if (allTransactions.isEmpty()) {
+            Label noTransactionsLabel = new Label("No transactions found");
+            noTransactionsLabel.setStyle("-fx-text-fill: #666666;");
+            transactionsBox.getChildren().add(noTransactionsLabel);
+        } else {
+            List<Transaction> filteredTransactions = allTransactions.stream()
+                .filter(transaction -> {
+                    if (currentSort.equals("all")) return true;
+                    if (currentSort.equals("deposit")) return transaction.getAmount() > 0;
+                    if (currentSort.equals("withdraw")) return transaction.getAmount() < 0;
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+            for (Transaction transaction : filteredTransactions) {
+                Label transactionLabel = new Label(transaction.getDescription());
+                transactionLabel.setStyle("-fx-text-fill: #333333;");
+                transactionsBox.getChildren().add(transactionLabel);
             }
         }
+    }
+
+    @FXML
+    private void handleSortAll() {
+        currentSort = "all";
+        displayTransactions();
+    }
+
+    @FXML
+    private void handleSortDeposit() {
+        currentSort = "deposit";
+        displayTransactions();
+    }
+
+    @FXML
+    private void handleSortWithdraw() {
+        currentSort = "withdraw";
+        displayTransactions();
     }
 
     /**

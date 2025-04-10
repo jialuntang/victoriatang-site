@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Line?>
 
 <!-- Root container -->
@@ -19,8 +20,18 @@
     <!-- Separator Line -->
     <Line endX="780" endY="80" startX="10" startY="80" stroke="#FFB499" strokeWidth="1.5" />
 
-    <!-- Page Title -->
-    <Label fx:id="transactionLabel" layoutX="10" layoutY="90" style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="currentTab-label" text="Transactions" />
+    <!-- Page Title and Sorting Buttons in HBox -->
+    <HBox layoutX="20" layoutY="90" spacing="20" alignment="CENTER_LEFT">
+        <!-- Page Title -->
+        <Label fx:id="transactionLabel" style="-fx-text-fill: #FF8A65; -fx-font-size: 20px; -fx-font-family: 'Segoe UI';" styleClass="currentTab-label" text="Transactions" />
+        
+        <!-- Sorting Buttons -->
+        <HBox spacing="10">
+            <Button fx:id="sortAllButton" onAction="#handleSortAll" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="All" />
+            <Button fx:id="sortDepositButton" onAction="#handleSortDeposit" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Deposits" />
+            <Button fx:id="sortWithdrawButton" onAction="#handleSortWithdraw" style="-fx-background-color: #FFA41B; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-background-radius: 8;" styleClass="styled-button" text="Withdrawals" />
+        </HBox>
+    </HBox>
 
     <!-- Scrollable Transaction List -->
     <ScrollPane fx:id="transactionScrollPane" hbarPolicy="NEVER" layoutX="20" layoutY="140" prefHeight="380" prefWidth="760" style="-fx-background: #FFF7E6; -fx-border-color: #FFB499; -fx-border-width: 1; -fx-border-radius: 8;" styleClass="transaction-scroll-pane" vbarPolicy="ALWAYS">

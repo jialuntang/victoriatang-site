@@ -3,10 +3,10 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 
+import application.data.JsonDataManager;
 import application.model.Transaction;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import application.data.JsonDataManager;
 
 public class Account {
     private final int id;
@@ -85,7 +85,8 @@ public class Account {
             transactionHistory.add(transaction);
             
             // Log transaction in database
-            dataManager.logTransaction(username, amount, description);
+            String type = amount > 0 ? "Deposit" : "Withdraw";
+            dataManager.logTransaction(username, amount, type, description);
             
             // Update balance
             updateBalance(amount);
@@ -108,7 +109,7 @@ public class Account {
         return new ArrayList<>(transactionHistory); // Return a copy to prevent external modification
     }
 
-    private void loadTransactionHistory() {
+    public void loadTransactionHistory() {
         try {
             List<Transaction> recentTransactions = dataManager.getRecentTransactions(id, 10);
             if (recentTransactions != null) {
