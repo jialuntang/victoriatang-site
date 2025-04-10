@@ -17,7 +17,7 @@ public class FinanceService {
 
     public boolean login(String username, String password) {
         if (dataManager.authenticateUser(username, password)) {
-            currentAccount = dataManager.getUserByUsername(username);
+            currentAccount = dataManager.getAccountByUsername(username);
             return true;
         }
         currentAccount = null;
@@ -33,10 +33,10 @@ public class FinanceService {
     }
 
     public boolean createUser(String username, String password) {
-        if (dataManager.getUserByUsername(username) != null) {
+        if (dataManager.getAccountByUsername(username) != null) {
             return false;
         }
-        Account account = dataManager.createUser(username, password);
+        Account account = dataManager.createAccount(username, password);
         dataManager.createAccount(account, 0.0, 0.0);
         return true;
     }

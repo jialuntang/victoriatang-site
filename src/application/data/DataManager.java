@@ -9,9 +9,7 @@ import application.model.TransactionStatus;
 public interface DataManager {
     // Account operations
     boolean authenticateUser(String username, String password);
-    Account createUser(String username, String password);
-    Account getUserByUsername(String username);
-    Account createAccount(Account account, double initialBalance, double hourlyWage);
+    Account createAccount(String username, String password);
     
     // Transaction operations
     Transaction createTransaction(Account sender, Account recipient, double amount, String description);
@@ -23,14 +21,13 @@ public interface DataManager {
     double getTotalIncoming(Account account);
     double getTotalOutgoing(Account account);
     void updateAccountBalance(Account account, double newBalance);
-    void showUsers();
     List<Transaction> getRecentTransactions(int accountId, int limit);
-    void addUser(String username, String password);
-    boolean userExists(String username);
-    boolean validateUser(String username, String password);
-    void addAccount(String username, double initialBalance, double initialHourlyWage);
+    void addAccount(String username, String password);
+    boolean accountExists(String username);
+    boolean validateAccount(String username, String password);
     Account getAccountByUsername(String username);
     double getAccountBalance(String username);
     void logTransaction(String username, double amount, String description);
+    
 
 } 

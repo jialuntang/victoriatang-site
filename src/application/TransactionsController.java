@@ -18,18 +18,12 @@ import java.util.List;
 import application.Account;
 import application.CurrentSession;
 import application.model.Transaction;
-import application.model.User;
 
 /**
  * Controller for the Transactions screen, displaying a user's transaction history.
  */
 public class TransactionsController {
 
-    private User user;
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     // UI Elements
     @FXML private Button backButton;
@@ -71,7 +65,7 @@ public class TransactionsController {
      */
     @FXML
     private void handleLogOutButtonAction() {
-        CurrentSession.getInstance().setCurrentAccount(null);
+        CurrentSession.getInstance().logout();
         navigateTo("/application/start.fxml");
     }
 
@@ -134,5 +128,6 @@ public class TransactionsController {
     private void handleBackButtonAction() {
         navigateTo("/application/home.fxml");
     }
+    
 }
 

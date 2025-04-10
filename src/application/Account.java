@@ -16,27 +16,17 @@ public class Account {
     private DoubleProperty hourlyWage;
     private List<Transaction> transactionHistory;
 
-    public Account(int id, String username, String passwordHash, double initialBalance, double initialHourlyWage) {
+    public Account(int id, String username, String passwordHash) {
         this.id = id;
         this.userId = id; // Using account id as user id since we're merging
         this.username = username;
         this.passwordHash = passwordHash;
-        this.balance = new SimpleDoubleProperty(initialBalance);
-        this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
+        this.balance = new SimpleDoubleProperty(0.0);
+        this.hourlyWage = new SimpleDoubleProperty(0.0);
         this.transactionHistory = new ArrayList<>();
         loadTransactionHistory();
     }
 
-    public Account(String username, int id, double initialBalance, double initialHourlyWage) {
-        this.id = id;
-        this.userId = id;
-        this.username = username;
-        this.passwordHash = ""; // Empty password hash for UI constructor
-        this.balance = new SimpleDoubleProperty(initialBalance);
-        this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
-        this.transactionHistory = new ArrayList<>();
-        loadTransactionHistory();
-    }
 
     public int getId() {
         return id;

@@ -27,7 +27,6 @@ import application.Account;
 import application.CurrentSession;
 import application.Database;
 import application.model.Transaction;
-import application.model.User;
 
 /**
  * Controller class for the Home screen in the JavaFX application.
@@ -35,10 +34,10 @@ import application.model.User;
  */
 public class HomeController {
 
-    private User user;
+    private Account account;
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     // UI Elements
@@ -159,7 +158,6 @@ public class HomeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/transactions.fxml"));
             Parent root = loader.load();
             TransactionsController controller = loader.getController();
-            controller.setUser(user);
             Stage stage = (Stage) transactionsButton.getScene().getWindow();
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());

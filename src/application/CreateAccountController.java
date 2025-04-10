@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import application.Account;
 import application.Database;
-import application.model.User;
 
 public class CreateAccountController {
 
@@ -114,8 +113,7 @@ public class CreateAccountController {
             HomeController controller = loader.getController();
             Account currentAccount = CurrentSession.getInstance().getCurrentAccount();
             if (currentAccount != null) {
-                User user = currentAccount.getUser();
-                controller.setUser(user);
+                controller.setAccount(currentAccount);
             }
             
             Scene scene = new Scene(root, 800, 600);
