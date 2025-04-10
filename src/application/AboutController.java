@@ -27,35 +27,43 @@ public class AboutController {
 
     @FXML
     private void initialize() {
-        aboutText.setText("""
-            
+        aboutText.setText("""            
         		Welcome to MyWallet!
 
-        		Features:
+        		Your all-in-one personal finance companion.
 
-        			- Real-time balance updates
+	        			Features:
+	
+						    - Real-time balance updates to stay on top of your finances
+						    - Visual charts to help track income and expenses clearly
+						    - Manage and review your recent transactions at a glance
+						    - Personalized and secure login for your privacy
+						    - User-friendly interface with a clean and responsive design
+						    - Lightweight and fast – optimized for smooth performance
+	
+						Coming soon:
+						    - Budget planner
+						    - Expense category analysis
+						    - Cloud backup & sync across devices
 
-        			- Track income and expenses visually
-
-        			- Manage recent transactions
-   
-        			- Secure, personalized login
-
-        			
-        		欢迎使用 MyWallet！
-
-        		功能特色：
-
-        			- 实时余额更新
-
-        			- 可视化追踪收入与支出
-
-        			- 管理近期交易记录
-
-        			- 安全个性化登录
-
-            
-            """);
+				欢迎使用 MyWallet！
+					
+				您的一站式个人财务助手。
+					
+						功能亮点：
+						
+						    - 实时更新账户余额，轻松掌握财务状况
+						    - 图表展示收支明细，一目了然
+						    - 快速查看与管理交易记录
+						    - 个性化安全登录，保障隐私
+						    - 简洁直观的用户界面，操作流畅
+						
+						即将推出：
+						    - 预算规划工具
+						    - 收支分类分析
+						    - 云端备份与多设备同步
+           
+        		    		     """);
     }
     
     // Method to handle the action event for the backButton

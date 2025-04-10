@@ -11,15 +11,33 @@
 <VBox alignment="TOP_CENTER" prefHeight="600" prefWidth="800" spacing="20" style="-fx-background-color: #FFF7E6;" styleClass="root-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AboutController">
 
     <!-- About Title Label configuration -->
-    <Label styleClass="home-title-label" text="About MyWallet">
-      <font>
-         <Font size="18.0" />
-      </font></Label>
+    <Label text="About MyWallet" style="-fx-text-fill: #FF8A65; -fx-font-size: 24px; -fx-font-family: 'Arial Black'; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);" styleClass="currentTab-label">
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
 
     <!-- Read-only Text Area for displaying about content -->
-    <TextArea fx:id="aboutText" editable="false" prefHeight="400" prefWidth="760" styleClass="description-textarea" wrapText="true" />
+    <TextArea fx:id="aboutText" editable="false" prefHeight="400" prefWidth="760" 
+              style="-fx-control-inner-background: #FFFFFF; 
+                     -fx-text-fill: #666666;
+                     -fx-font-size: 14px;
+                     -fx-font-family: 'Segoe UI';
+                     -fx-border-color: #FFB499;
+                     -fx-border-radius: 8;
+                     -fx-background-radius: 8;
+                     -fx-padding: 10;" 
+              wrapText="true" />
 
     <!-- Back Button configuration -->
-    <Button fx:id="backButton" onAction="#handleBackButtonAction" style="-fx-background-color: #FFA41B;" styleClass="styled-button" text="Back" />
+    <Button fx:id="backButton" 
+            onAction="#handleBackButtonAction" 
+            style="-fx-background-color: #FFA41B;
+                   -fx-text-fill: white;
+                   -fx-font-family: 'Segoe UI';
+                   -fx-font-size: 14px;
+                   -fx-background-radius: 8;" 
+            styleClass="styled-button" 
+            text="Back" />
 
 </VBox>
