@@ -1,6 +1,7 @@
 package application.data;
 
 import application.model.*;
+import application.Account;
 import java.util.List;
 
 public interface DataManager {

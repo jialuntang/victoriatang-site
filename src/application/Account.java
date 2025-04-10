@@ -8,19 +8,38 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public class Account {
+    private final int id;
+    private final int userId;
     private String username;
-    private int IDnum; 
     private DoubleProperty balance;
     private DoubleProperty hourlyWage;
     private List<Transaction> transactionHistory;
 
-    public Account(String username, int IDnum, double initialBalance, double initialHourlyWage) {
-        this.username = username;
-        this.IDnum = IDnum;
+    public Account(int id, double initialBalance, double initialHourlyWage, int userId) {
+        this.id = id;
+        this.userId = userId;
         this.balance = new SimpleDoubleProperty(initialBalance);
         this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
         this.transactionHistory = new ArrayList<>();
         loadTransactionHistory();
+    }
+
+    public Account(String username, int id, double initialBalance, double initialHourlyWage) {
+        this.id = id;
+        this.userId = 0; // This constructor is used for UI, userId not needed
+        this.username = username;
+        this.balance = new SimpleDoubleProperty(initialBalance);
+        this.hourlyWage = new SimpleDoubleProperty(initialHourlyWage);
+        this.transactionHistory = new ArrayList<>();
+        loadTransactionHistory();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public double getBalance() {
@@ -43,7 +62,7 @@ public class Account {
     public void setHourlyWage(double newHourlyWage) {
         this.hourlyWage.set(newHourlyWage);
         try {
-            Database.updateHourlyWage(IDnum, newHourlyWage);
+            Database.updateHourlyWage(id, newHourlyWage);
         } catch (Exception e) {
             System.out.println("Error updating hourly wage in database: " + e.getMessage());
         }
@@ -51,10 +70,6 @@ public class Account {
 
     public String getUsername() {
         return username;
-    }
-
-    public int getIDnum() {
-        return IDnum;
     }
 
     public DoubleProperty balanceProperty() {
@@ -68,7 +83,7 @@ public class Account {
     public void addTransaction(double amount, String description) {
         try {
             // Create and add transaction to memory
-            Transaction transaction = new Transaction(username, amount, description);
+            Transaction transaction = new Transaction(0, id, 0, amount, description);
             transactionHistory.add(transaction);
             
             // Log transaction in database
@@ -97,7 +112,7 @@ public class Account {
 
     private void loadTransactionHistory() {
         try {
-            List<Transaction> recentTransactions = Database.getRecentTransactions(IDnum, 10);
+            List<Transaction> recentTransactions = Database.getRecentTransactions(id, 10);
             if (recentTransactions != null) {
                 transactionHistory = recentTransactions;
             }
@@ -111,7 +126,7 @@ public class Account {
 
     public double getTotalIncoming() {
         try {
-            return Database.getTotalIncoming(IDnum);
+            return Database.getTotalIncoming(id);
         } catch (Exception e) {
             System.out.println("Error getting total incoming: " + e.getMessage());
             return 0.0;
@@ -120,7 +135,7 @@ public class Account {
 
     public double getTotalOutgoing() {
         try {
-            return Database.getTotalOutgoing(IDnum);
+            return Database.getTotalOutgoing(id);
         } catch (Exception e) {
             System.out.println("Error getting total outgoing: " + e.getMessage());
             return 0.0;
