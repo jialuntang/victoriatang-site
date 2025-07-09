@@ -24,15 +24,7 @@ public class CreateAccountController {
 
     @FXML
     private void handleBackButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/application/start.fxml"));
-            Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) backButton.getScene().getWindow();
-            primaryStage.setScene(scene);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateTo("/application/start.fxml", backButton);
     }
 
     @FXML
@@ -60,29 +52,13 @@ public class CreateAccountController {
             dataManager.addAccount(username, password);
             Account newAccount = dataManager.getAccountByUsername(username);
             if (newAccount != null) {
-                // Set the current account in the session
                 CurrentSession.getInstance().setCurrentAccount(newAccount);
                 showAlert(AlertType.INFORMATION, "Success", "Account created successfully");
-                
-                // Load the home screen
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
-                Parent root = loader.load();
-                
-                // Get the controller and set the account
-                HomeController controller = loader.getController();
-                controller.setAccount(newAccount);
-                
-                Scene scene = new Scene(root, 800, 600);
-                scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-                
-                Stage primaryStage = (Stage) createButton.getScene().getWindow();
-                primaryStage.setScene(scene);
-                primaryStage.show();
+                navigateTo("/application/home.fxml", createButton);
             } else {
                 showAlert(AlertType.ERROR, "Error", "Failed to create account");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             showAlert(AlertType.ERROR, "Error", "Failed to create account: " + e.getMessage());
         }
     }
@@ -103,6 +79,18 @@ public class CreateAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Registration Failed", "An unexpected error occurred. Please try again.");
+        }
+    }
+
+    private void navigateTo(String fxmlFile, Button button) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
+            Stage stage = (Stage) button.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Error", "Failed to navigate to the requested screen.");
         }
     }
 

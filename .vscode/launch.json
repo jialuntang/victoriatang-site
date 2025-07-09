@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug JavaFX Application",
+            "request": "launch",
+            "mainClass": "application.Main",
+            "projectName": "finance-app",
+            "vmArgs": [
+                "--module-path",
+                "${env:JAVAFX_HOME}/lib",
+                "--add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base",
+                "--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+                "-Djavafx.macosx.embedded=false"
+            ],
+            "preLaunchTask": "maven-compile"
+        }
+    ]
+}

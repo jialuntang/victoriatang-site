@@ -130,8 +130,8 @@ public class StartController {
 
     @FXML
     private void handleLogin() {
-        String username = loginUsername.getText();
-        String password = loginPassword.getText();
+        String username = loginUsername.getText().trim();
+        String password = loginPassword.getText().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
             errorLabel.setText("Please enter both username and password");
@@ -141,13 +141,11 @@ public class StartController {
         if (financeService.login(username, password)) {
             // Navigate to home screen
             CurrentSession.getInstance().setCurrentAccount(financeService.getCurrentAccount());
-            Main.showHomeScreen();
+            navigateTo("/application/home.fxml");
         } else {
             errorLabel.setText("Invalid username or password");
         }
     }
-
-
 
     @FXML
     private void showLoginBox() {
@@ -158,7 +156,5 @@ public class StartController {
         exitButton.setVisible(true);
         errorLabel.setText("");
     }
-
-
 }
 

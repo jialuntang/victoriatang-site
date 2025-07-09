@@ -1,16 +1,16 @@
 package application;
 
+import application.data.JsonDataManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import application.data.JsonDataManager;
 
 /**
  * Controller class for handling user login in the JavaFX application.
@@ -49,7 +49,7 @@ public class LoginController {
             Account account = dataManager.getAccountByUsername(username);
             if (account != null) {
                 CurrentSession.getInstance().setCurrentAccount(account);
-                showHomeScreen();
+                navigateTo("/application/home.fxml", loginButton);
             } else {
                 showAlert(AlertType.ERROR, "Login Failed", "Could not retrieve account information.");
             }
@@ -64,15 +64,7 @@ public class LoginController {
      */
     @FXML
     private void handleBackButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/application/start.fxml"));
-            Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) backButton.getScene().getWindow();
-            primaryStage.setScene(scene);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateTo("/application/start.fxml", backButton);
     }
 
     /**
@@ -86,19 +78,15 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    /**
-     * Loads and displays the home screen after successful login.
-     */
-    private void showHomeScreen() {
+    private void navigateTo(String fxmlFile, Button button) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/home.fxml"));
-            Parent root = loader.load();
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
             Scene scene = new Scene(root, 800, 600);
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            Stage primaryStage = (Stage) loginButton.getScene().getWindow();
-            primaryStage.setScene(scene);
+            Stage stage = (Stage) button.getScene().getWindow();
+            stage.setScene(scene);
         } catch (Exception e) {
-            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Error", "Failed to navigate to the requested screen.");
         }
     }
 }

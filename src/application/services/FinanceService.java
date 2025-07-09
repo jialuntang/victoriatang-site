@@ -1,11 +1,12 @@
 package application.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import application.Account;
+import application.data.DataManager;
 import application.model.Transaction;
 import application.model.TransactionStatus;
-import application.data.DataManager;
-import java.util.List;
-import java.util.ArrayList;
 
 public class FinanceService {
     private final DataManager dataManager;

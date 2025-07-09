@@ -35,14 +35,13 @@ public class CurrentSession {
 
     // Method for logging in a user
     public void login(String username) {
-        currentAccount = dataManager.getAccountByUsername(username); // Fetch from database
+        currentAccount = dataManager.getAccountByUsername(username);
         if (currentAccount != null) {
             System.out.println("User logged in: " + currentAccount.getUsername());
         } else {
             System.out.println("No user is currently logged in.");
         }
     }
-
 
     // Method for logging out a user
     public void logout() {

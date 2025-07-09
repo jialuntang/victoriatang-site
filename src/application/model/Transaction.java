@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
-    private final int id;
-    private final int senderId;
-    private final int recipientId;
-    private final double amount;
-    private final String description;
-    private final LocalDateTime timestamp;
+    private int id;
+    private int senderId;
+    private int recipientId;
+    private double amount;
+    private String description;
+    private LocalDateTime timestamp;
     private TransactionStatus status;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -25,6 +25,10 @@ public class Transaction {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getSenderId() {
@@ -45,6 +49,10 @@ public class Transaction {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public TransactionStatus getStatus() {
