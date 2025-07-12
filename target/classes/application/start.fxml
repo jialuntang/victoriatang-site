@@ -23,7 +23,7 @@
                  -fx-font-size: 48px; 
                  -fx-font-weight: bold; 
                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2);" 
-          styleClass="title-text" text="MyWallet">
+          styleClass="title-text" text="Digital Wallet">
         <font>
             <Font size="48.0" />
         </font>

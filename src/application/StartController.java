@@ -1,49 +1,41 @@
 package application;
 
-// Import necessary JavaFX classes
-// Used to link FXML elements with the controller
 import application.services.FinanceService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-// Controller class for handling events from the start.fxml file
-public class StartController {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    // Annotating loginButton to link with the Button element in the FXML file
+public class StartController implements Initializable {
+
+    @FXML
+    private AnchorPane rootPane;
+
     @FXML
     private Button loginButton;
-    
-    // Annotating guestButton to link with the Button element in the FXML file
     @FXML
     private Button guestButton;
-
-    // Annotating exitButton to link with the Button element in the FXML file
     @FXML
     private Button exitButton;
-
-    // Annotating aboutButton to link with the Button element in the FXML file
     @FXML
     private Button aboutButton;
-
-    // Annotating createAccountLink to link with the Hyperlink element in the FXML file
     @FXML
     private Hyperlink createAccountLink;
-    
     @FXML
-    private VBox  loginBox;
+    private VBox loginBox;
     @FXML
-    private VBox  createAccountBox;
+    private VBox createAccountBox;
     @FXML
     private TextField loginUsername;
     @FXML
@@ -57,70 +49,56 @@ public class StartController {
 
     private final FinanceService financeService = Main.getFinanceService();
 
-    // Method to handle the action event for the loginButton
+ @Override
+public void initialize(URL location, ResourceBundle resources) {
+    Timeline timeline = new Timeline(
+        new KeyFrame(Duration.seconds(0), e -> rootPane.setStyle("-fx-background-color: linear-gradient(#ff9a9e, #fad0c4);")),
+        new KeyFrame(Duration.seconds(5), e -> rootPane.setStyle("-fx-background-color: linear-gradient(#a18cd1, #fbc2eb);")),
+        new KeyFrame(Duration.seconds(10), e -> rootPane.setStyle("-fx-background-color: linear-gradient(#fad0c4, #ffd1ff);"))
+    );
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.play();
+}
+
     @FXML
     private void handleLoginButtonAction() {
-    	 navigateTo("/application/login.fxml");
+        navigateTo("/application/login.fxml");
     }
-    
-    // Method to handle the create account button
+
     @FXML
     private void handleCreateAccountLinkAction() {
         navigateTo("/application/create_account.fxml");
     }
-    
-    // Method to handle guest button
+
     @FXML
     private void handleGuestButtonAction() {
-    	navigateTo("/application/home.fxml");
+        navigateTo("/application/home.fxml");
     }
-    
 
-    // Method to handle about button
     @FXML
     private void handleAboutButtonAction() {
-    	navigateTo("/application/about.fxml");
+        navigateTo("/application/about.fxml");
     }
-    
-    // Method to handle the action event for the exitButton
+
     @FXML
     private void handleExitButtonAction() {
-        
-    	System.exit(0);
-    	
+        System.exit(0);
     }
-    
-    
-    // Method to navigate to inputted FXML file scenes
+
     private void navigateTo(String fxmlFile) {
         try {
-        	// Load the FXML file for the inputted scene
             Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
-            
-            // Create a new scene for the loaded content
             Scene scene = new Scene(root, 800, 600);
-            
-            // Link the CSS file to the scene
             scene.getStylesheets().add(getClass().getResource("/application/styles.css").toExternalForm());
-            
-            // Get the current state (Window)
             Stage primaryStage = (Stage) exitButton.getScene().getWindow();
-            
-            //Set the scene to the primary stage
             primaryStage.setScene(scene);
-            
         } catch (Exception e) {
-        	// print the stack trace if there is an exception
             e.printStackTrace();
-            
-            // show an alert error
-            showAlert(AlertType.ERROR, "Error", "Unable to load the requested page.");
+            showAlert(Alert.AlertType.ERROR, "Error", "Unable to load the requested page.");
         }
     }
-    
-    
-    // Method to show Alerts
-    private void showAlert(AlertType alertType, String title, String message) {
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -139,7 +117,6 @@ public class StartController {
         }
 
         if (financeService.login(username, password)) {
-            // Navigate to home screen
             CurrentSession.getInstance().setCurrentAccount(financeService.getCurrentAccount());
             navigateTo("/application/home.fxml");
         } else {
@@ -157,4 +134,3 @@ public class StartController {
         errorLabel.setText("");
     }
 }
-

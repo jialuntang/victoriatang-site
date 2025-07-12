@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Import required JavaFX classes -->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- Root container linked to CreateAccountController -->
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.6" 
+      fx:controller="application.CreateAccountController" 
+      alignment="CENTER" 
+      spacing="20" 
+      style="-fx-background-color: #FFF7E6;"
+      styleClass="root-pane">
+
+    <Label text="Create New Account" style="-fx-text-fill: #333333;" styleClass="title-label">
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
+    
+<VBox alignment="CENTER" spacing="20" fillWidth="false">
+    <TextField fx:id="usernameField" promptText="Username" 
+               prefWidth="300" style="-fx-background-color: white;" />
+    <PasswordField fx:id="passwordField" promptText="Password" 
+                   prefWidth="300" style="-fx-background-color: white;" />
+    <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" 
+                   prefWidth="300" style="-fx-background-color: white;" />
+</VBox>
+
+
+    <Button fx:id="createButton" 
+            text="Create Account" 
+            onAction="#handleCreateButtonAction" 
+            style="-fx-background-color: #FFA41B;"
+            styleClass="styled-button"/>
+    
+    <Button fx:id="backButton" 
+            text="Back" 
+            onAction="#handleBackButtonAction" 
+            style="-fx-background-color: #FFA41B;"
+            styleClass="styled-button"/>
+    
+</VBox>

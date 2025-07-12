@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane style="-fx-background-color: linear-gradient(to bottom, #42a5f5, #7e57c2);" 
+            styleClass="root-pane" 
+            xmlns="http://javafx.com/javafx/23.0.1" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="application.DepWidthController">
+
+    <!-- App Title -->
+    <Label layoutX="15" layoutY="20"
+           style="-fx-text-fill: #FF5722; 
+                  -fx-font-size: 26px; 
+                  -fx-font-weight: bold; 
+                  -fx-font-family: 'Segoe UI'; 
+                  -fx-background-color: #FFE0B2; 
+                  -fx-padding: 6 18; 
+                  -fx-background-radius: 20; 
+                  -fx-border-color: #FFB499; 
+                  -fx-border-width: 2; 
+                  -fx-border-radius: 20;"
+           styleClass="home-title-label" text="My Wallet" />
+
+    <!-- Separator Line -->
+    <Line endX="780" endY="80" startX="10" startY="80" stroke="#FFCCBC" strokeWidth="1.5" />
+
+    <!-- Page Title -->
+    <Label fx:id="depWitLabel" layoutX="10" layoutY="90"
+           style="-fx-text-fill: #FF8A65; 
+                  -fx-font-size: 22px; 
+                  -fx-font-family: 'Segoe UI'; 
+                  -fx-font-weight: bold;"
+           styleClass="currentTab-label" text="Deposit / Withdraw" />
+
+    <!-- User Balance Display -->
+    <Label fx:id="balanceLabel" layoutX="10" layoutY="140"
+           style="-fx-text-fill: #212121; 
+                  -fx-font-size: 18px; 
+                  -fx-font-family: 'Segoe UI'; 
+                  -fx-font-weight: bold;" 
+           styleClass="title-label" text="Balance: 0.0" />
+
+    <!-- Deposit and Withdrawal Section -->
+    <VBox layoutX="300" layoutY="200" spacing="20" alignment="CENTER">
+        <TextField fx:id="wageField" promptText="Enter Amount"
+                   style="-fx-background-color: #ffffff; 
+                          -fx-prompt-text-fill: #999999; 
+                          -fx-font-family: 'Segoe UI'; 
+                          -fx-font-size: 14px; 
+                          -fx-background-radius: 10; 
+                          -fx-border-color: #ccc; 
+                          -fx-border-radius: 10;" 
+                   prefWidth="220" />
+        <TextField fx:id="descriptionField" promptText="Enter Description"
+                   style="-fx-background-color: #ffffff; 
+                          -fx-prompt-text-fill: #999999; 
+                          -fx-font-family: 'Segoe UI'; 
+                          -fx-font-size: 14px; 
+                          -fx-background-radius: 10; 
+                          -fx-border-color: #ccc; 
+                          -fx-border-radius: 10;" 
+                   prefWidth="220" />
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="depositButton" onAction="#handleDepositButtonAction"
+                    style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                           -fx-text-fill: white; 
+                           -fx-font-family: 'Segoe UI'; 
+                           -fx-font-size: 14px; 
+                           -fx-font-weight: bold; 
+                           -fx-background-radius: 10; 
+                           -fx-padding: 6 16;" 
+                    styleClass="styled-button" text="Deposit" />
+            <Button fx:id="withdrawButton" onAction="#handleWithdrawButtonAction"
+                    style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                           -fx-text-fill: white; 
+                           -fx-font-family: 'Segoe UI'; 
+                           -fx-font-size: 14px; 
+                           -fx-font-weight: bold; 
+                           -fx-background-radius: 10; 
+                           -fx-padding: 6 16;" 
+                    styleClass="styled-button" text="Withdraw" />
+        </HBox>
+    </VBox>
+
+    <!-- Separator Line -->
+    <Line endX="780" endY="535" startX="10" startY="535" stroke="#FFCCBC" strokeWidth="1.5" />
+
+    <!-- Bottom Navigation Buttons -->
+    <Button fx:id="dashboardButton" layoutX="20" layoutY="550" prefWidth="160" onAction="#handleDashboardButtonAction"
+            style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                   -fx-text-fill: white; 
+                   -fx-font-family: 'Segoe UI'; 
+                   -fx-font-size: 14px; 
+                   -fx-font-weight: bold; 
+                   -fx-background-radius: 10;" 
+            styleClass="styled-button" text="Dashboard" />
+    <Line endX="200" endY="592" startX="200" startY="545" stroke="#FFCCBC" strokeWidth="1.5" />
+
+    <Button fx:id="DWButton" layoutX="220" layoutY="550" prefWidth="160"
+            style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                   -fx-text-fill: white; 
+                   -fx-font-family: 'Segoe UI'; 
+                   -fx-font-size: 14px; 
+                   -fx-font-weight: bold; 
+                   -fx-background-radius: 10;" 
+            styleClass="styled-button" text="Deposit/Withdraw" />
+    <Line endX="400" endY="592" startX="400" startY="545" stroke="#FFCCBC" strokeWidth="1.5" />
+
+    <Button fx:id="transactionsButton" layoutX="420" layoutY="550" prefWidth="160" onAction="#handleTransactionsButtonAction"
+            style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                   -fx-text-fill: white; 
+                   -fx-font-family: 'Segoe UI'; 
+                   -fx-font-size: 14px; 
+                   -fx-font-weight: bold; 
+                   -fx-background-radius: 10;" 
+            styleClass="styled-button" text="Transactions" />
+    <Line endX="600" endY="592" startX="600" startY="545" stroke="#FFCCBC" strokeWidth="1.5" />
+
+    <Button fx:id="logOutButton" layoutX="620" layoutY="550" prefWidth="160" onAction="#handleLogOutButtonAction"
+            style="-fx-background-color: linear-gradient(to right, #FFA41B, #FF8A00); 
+                   -fx-text-fill: white; 
+                   -fx-font-family: 'Segoe UI'; 
+                   -fx-font-size: 14px; 
+                   -fx-font-weight: bold; 
+                   -fx-background-radius: 10;" 
+            styleClass="styled-button" text="Log Out" />
+
+</AnchorPane>
